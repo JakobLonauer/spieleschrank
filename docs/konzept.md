@@ -1,6 +1,6 @@
 # Spieleschrank: Konzept und Entscheidungen
 
-Stand: 26. Oktober 2026, Version 0.1 (Prototyp v1)
+Stand: 26. Oktober 2026, Version 0.2 (Prototyp v2). Was sich gegenüber v1 geändert hat, steht in `CHANGELOG.md`; die Fassung zu v1 liegt im Git-Tag `v0.1-prototyp`.
 
 Dieses Dokument hält alles fest, was bis zum ersten Prototyp entschieden wurde. Es ist die Referenz, gegen die spätere Änderungen geprüft werden.
 
@@ -45,17 +45,21 @@ Eine private Website, auf der Familie und Freunde jederzeit Jakobs Brettspielsam
 ### Version 1 (bewusst klein)
 
 **Mitglieder**
+- Erster Login: Willkommensschirm mit drei Schritten und eigenem Passwort
 - Regal durchsuchen und filtern
 - Spiel ansehen
 - Ausleihen anfragen, bzw. vormerken, wenn es verliehen ist
-- „Meine“: was ich gerade habe, was abholbereit ist, was ich angefragt habe
+- „Meine“: was abholbereit ist (absagen möglich), was abgelehnt wurde (mit Grund, ausblendbar), was ich gerade habe, was ich angefragt habe
 - Bei Einmalspielen: „Kenn ich schon“
 
 **Jakob (Verwalten)**
-- Anfragen annehmen (Leihdauer, Sichtbarkeit) oder ablehnen (optional mit Grund)
-- Übergabe und Rückgabe abhaken
-- Spiel hinzufügen (BGG-Suche) und bearbeiten (verleihbar, Spielart, durchgespielt, Genres, Kurzbeschreibung)
-- Personen anlegen, neues Passwort erzeugen, Zugangsanfragen bearbeiten
+- Anfragen annehmen (Leihdauer, Sichtbarkeit) oder ablehnen (optional mit Grund); danach jeweils „per WhatsApp Bescheid geben“ mit vorausgefülltem Text
+- Direkt verleihen ohne Anfrage („Verleihen“ in der Spielansicht), etwa wenn jemand vor Ort fragt
+- Übergabe und Rückgabe abhaken; bei Überfälligkeit freundlich „Erinnern“ per WhatsApp
+- Spiel hinzufügen (BGG-Suche) und bearbeiten (verleihbar, Spielart, durchgespielt, Genres, Sprache der Ausgabe, Kurzbeschreibung)
+- Personen anlegen (optional mit Handynummer), neues Passwort erzeugen, Zugangsanfragen bearbeiten
+
+**WhatsApp ohne Backend:** Alle Nachrichten laufen über `wa.me`-Links mit vorausgefülltem Text. Mit hinterlegter Handynummer öffnet sich direkt der richtige Chat, ohne Nummer wählt man den Kontakt in WhatsApp aus. Gesendet wird immer erst, wenn man selbst auf Senden tippt.
 
 ### Bewusst später (oder nie)
 Spieleabend-Planer, Partien-Log, Bewertungen, Wunschliste, Geschenk-Modus, QR-Sticker, Direkt-Weitergabe, Statistiken, Gemeinschafts-Bibliothek mit mehreren Besitzern. Das Feld `besitzer_id` bleibt trotzdem im Datenmodell, damit spätere Erweiterungen keinen Umbau brauchen.
@@ -79,8 +83,13 @@ angefragt ──► reserviert ──► verliehen ──► zurück
 
 - Eine Anfrage auf ein verliehenes oder reserviertes Spiel ist automatisch eine **Vormerkung**. Reihenfolge nach Zeitpunkt.
 - Annehmen geht erst, wenn das Spiel frei ist.
-- Die Fälligkeit startet bei der Übergabe (außer bei festem Datum).
+- Die Fälligkeit startet bei der Übergabe (außer bei festem Datum). Beim direkten Verleihen startet sie sofort.
 - Bei der Rückgabe zeigt der Hinweis, wer es vorgemerkt hat.
+- Eine Reservierung kann das Mitglied selbst absagen (Status `zurückgezogen`).
+- Eine Ablehnung bleibt für das Mitglied sichtbar, bis es sie ausblendet (`seen`). Eine neue Anfrage auf dasselbe Spiel blendet sie automatisch aus.
+- Direkt verleihen an jemanden, der das Spiel schon angefragt hat, wandelt dessen Anfrage um, statt einen zweiten Eintrag anzulegen.
+
+**Vorrang der Abzeichen:** eigener Stand > Verliehen/Reserviert > Nur gemeinsam > offene Anfragen (nur Jakob) > Neu. So sieht man auch bei einem nicht verleihbaren Spiel, dass es gerade weg ist.
 
 ### Abzeichen auf den Kacheln (nur für Ausnahmen)
 
@@ -92,6 +101,8 @@ angefragt ──► reserviert ──► verliehen ──► zurück
 | Reserviert | alle | angenommen, noch nicht übergeben |
 | Nur gemeinsam | alle | nicht verleihbar |
 | Bei dir / Abholbereit / Angefragt / Vorgemerkt | nur die betroffene Person | eigener Stand |
+| Abgelehnt | nur die betroffene Person | Ablehnung noch nicht ausgeblendet |
+| Neu | alle | in den letzten 30 Tagen hinzugekommen |
 | Rückgabe fällig | nur die betroffene Person | eigene Ausleihe überfällig |
 | Überfällig | nur Jakob | fremde Ausleihe überfällig |
 | 1 Anfrage / N Anfragen | nur Jakob | offene Anfragen |
@@ -123,6 +134,12 @@ Mitglieder können bei Einmalspielen „Kenn ich schon“ markieren. Jakob sieht
 6. Alltagssprache: „Schwierigkeit: leicht / mittel / anspruchsvoll“ statt BGG-Gewicht.
 7. Rückgängig statt Nachfragen: umkehrbare Aktionen passieren sofort, mit „Rückgängig“ im Hinweis unten. Kein Bestätigungsdialog (Ausnahme: neues Passwort erzeugen, weil nicht umkehrbar).
 8. Leerer Filterzustand schlägt vor, welcher Filter die meisten Treffer zurückbringt.
+9. Am Handy ist die Filterreihe einzeilig und wischbar, damit schon der erste Bildschirm Spiele zeigt (geprüft ab 320 px).
+10. Kacheln zeigen nur Spielerzahl, Dauer und bei Bedarf „Englisch“. Die Schwierigkeit steht als Wort in der Spielansicht.
+11. Die Begrüßung nennt neue Spiele („Neu im Regal: Heat und Mysterium“) statt eines eigenen Bereichs.
+12. Annehmen und Ablehnen enden in einer kurzen Bestätigung mit WhatsApp-Knopf und „Rückgängig“.
+13. Der „Rückgängig“-Hinweis bleibt stehen, solange man darauf zeigt oder ihn per Tastatur ansteuert.
+14. Nach jeder Aktion landet der Tastaturfokus an einer sinnvollen Stelle (Auslöser oder Seitenüberschrift), nie im Nichts.
 
 ### Visuelle Sprache
 - **Die Cover sind die Farbe.** Die Oberfläche bleibt ruhig in filzgrün getönten Neutraltönen (Spieltisch).
@@ -150,7 +167,7 @@ Mitglieder können bei Einmalspielen „Kenn ich schon“ markieren. Jakob sieht
 | Regalbrett | #DCCBAE → #C7B291 | #5B4C3A → #4A3D2E |
 
 - **Schriften:** Bricolage Grotesque (Titel, Wortmarke, Überschriften), Figtree (Oberfläche, Fließtext). Beide unter SIL Open Font License.
-- **Bewegung:** Blatt öffnet mit `cubic-bezier(.32,.72,0,1)` in ca. 440 ms; sonstige Übergänge 150 bis 300 ms mit `cubic-bezier(.2,.8,.2,1)`. Filterwechsel lassen Kacheln per View Transition an den neuen Platz gleiten. Reduzierte Bewegung wird respektiert.
+- **Bewegung:** Blatt öffnet mit `cubic-bezier(.32,.72,0,1)` in ca. 440 ms; sonstige Übergänge 150 bis 300 ms mit `cubic-bezier(.2,.8,.2,1)`. Filterwechsel lassen Kacheln per View Transition an den neuen Platz gleiten. Nur die sichtbaren Kacheln bekommen einen Übergangsnamen, so bleibt der Aufwand unabhängig von der Sammlungsgröße (gemessen: 182 Spiele ca. 0,1 s statt 0,65 s pro Filter-Tipp). Reduzierte Bewegung wird respektiert.
 - **Radien:** Schachteln 7 px, Buttons 14 px, Karten 18 bis 20 px, Blatt 24 px, Chips rund.
 
 ---
@@ -159,9 +176,9 @@ Mitglieder können bei Einmalspielen „Kenn ich schon“ markieren. Jakob sieht
 
 | Tabelle | Wichtigste Felder |
 |---|---|
-| users | Name, Benutzername, Passwort-Hash, Rolle (admin/mitglied), Avatar, Passwort-ändern-Pflicht |
-| games | bgg_id, Titel, Anzeigename, Spieler min/max, Dauer min/max, Mindestalter, Schwierigkeit (1 bis 3, aus BGG-Gewicht), Genres (eigene Tags), Kurzbeschreibung, Cover-Datei, Hauptfarbe des Covers, **besitzer_id**, verleihbar, spielart (normal / einmalig_intakt / einmalig_verbraucht), durchgespielt, private Notiz |
-| loans | Spiel, Person, Status (angefragt / reserviert / verliehen / zurück / abgelehnt / zurückgezogen), Wunsch (asap/Datum), Wunschdatum, Nachricht, Leihdauer (2w/1m/date/open), festes Datum, sichtbar (ja/nein), verliehen_am, fällig_am, zurück_am, Ablehnungsgrund |
+| users | Name, Benutzername, Passwort-Hash, Rolle (admin/mitglied), Avatar, Handynummer (optional), Passwort-ändern-Pflicht |
+| games | bgg_id, Titel, Anzeigename, alternative Titel, Spieler min/max, beste Spielerzahl (BGG-Umfrage), Dauer min/max, Mindestalter, Schwierigkeit (1 bis 3, aus BGG-Gewicht), Genres (eigene Tags), Sprache der Ausgabe, textlastig (aus BGG-Sprachabhängigkeit), Kurzbeschreibung, Cover-Datei, Hauptfarbe des Covers, **besitzer_id**, verleihbar, spielart (normal / einmalig_intakt / einmalig_verbraucht), durchgespielt, hinzugefügt_am, private Notiz |
+| loans | Spiel, Person, Status (angefragt / reserviert / verliehen / zurück / abgelehnt / zurückgezogen), Wunsch (asap/Datum), Wunschdatum, Nachricht, Leihdauer (2w/1m/date/open), festes Datum, sichtbar (ja/nein), verliehen_am, fällig_am, zurück_am, Ablehnungsgrund, Ablehnung gesehen |
 | played | Person, Spiel („kenn ich schon“) |
 | access_requests | Name, Kontakt, Nachricht, Status |
 
@@ -208,11 +225,22 @@ Quellen (Stand August 2026, Dokumentation eines Open-Source-Projekts; verbindlic
 
 ---
 
-## 9. Prototyp v1: was drin ist
+## 9. Prototypen
 
-Datei: `prototyp/v1-2026-10-26/index.html` (identisch mit der veröffentlichten Version), plus `index-offline.html` mit eingebetteten Schriften.
+| Version | Ordner | Eingefrorener Stand |
+|---|---|---|
+| v1 | `prototyp/v1-2026-10-26/` | Artifact „Spieleschrank v1“, Git-Tag `v0.1-prototyp` |
+| v2 | `prototyp/v2-2026-10-26/` | Git-Tag `v0.2-prototyp`; die Arbeitsversion „Spieleschrank“ zeigt aktuell v2 |
 
-- Prototyp-Leiste oben: Ansicht als Lisa (Mitglied), Jakob (Verwalten) oder Anmeldeseite.
+Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-offline.html` mit eingebetteten Schriften.
+
+### Prüfung von v2
+- Barrierefreiheits-Audit (axe-core) in allen Hauptzuständen hell und dunkel: keine Verstöße.
+- Kein seitliches Überlaufen von 320 px bis Desktop, auch nicht mit offenen Blättern.
+- Alle neuen Abläufe Ende zu Ende durchgespielt (Ablehnung sichtbar, direkt verleihen, Reservierung absagen, erster Login, Rückgängig, Tastaturfokus).
+
+### Was die Prototypen enthalten
+- Prototyp-Leiste oben: Ansicht als Lisa (Mitglied), Jakob (Verwalten), erster Login (Oma Erika) oder Anmeldeseite.
 - 26 Beispielspiele, 6 Personen, Beispiel-Ausleihen in allen Zuständen (verliehen, überfällig, reserviert, angefragt, vorgemerkt, nicht sichtbar).
 - Alle Abläufe aus Abschnitt 3 sind klickbar.
 
@@ -220,14 +248,32 @@ Datei: `prototyp/v1-2026-10-26/index.html` (identisch mit der veröffentlichten 
 - Cover sind generierte Platzhalter (abstrakte Muster pro Spiel). Im Betrieb kommen die BGG-Cover.
 - BGG-Suche nutzt eine kleine Beispielliste (Akropolis, Sky Team, Detective, Azul, …).
 - Kein Backend: Nach dem Neuladen ist alles im Ausgangszustand.
-- Jedes Passwort funktioniert; anmelden als `lisa` oder `jakob`.
+- Jedes Passwort funktioniert; anmelden als `lisa`, `jakob` oder `erika`.
+- Beste Spielerzahl, Sprache der Ausgabe und Neuzugänge sind Beispielwerte.
 - Die Online-Version lädt die Schriften von Google Fonts; ohne Internet nimmt sie Systemschriften. Die Offline-Variante sieht immer gleich aus.
 
 **Abweichung vom ursprünglichen Plan:** Jakob sieht „Verwalten“ statt „Meine“, damit auch er nur zwei Bereiche hat.
 
 ---
 
-## 10. Nächste Schritte
+## 10. Offene Ideen aus der Review (noch nicht umgesetzt)
+
+**Kleine Verbesserungen**
+- Suche findet auch englische Originaltitel (z. B. „Wingspan“ → Flügelschlag) und „ue“-Schreibweisen.
+- Nach einer Rückgabe die nun annehmbare Vormerkung oben hervorheben („Jetzt frei“).
+- Verlauf pro Spiel, nur für Jakob („Zuletzt bei Max (Okt.), Lisa (Sep.)“).
+
+**Für den echten Bau**
+- Echte Cover haben verschiedene Seitenverhältnisse: ganze Schachtel auf ihrer Hauptfarbe zeigen, nie beschneiden.
+- Schriftgrößen in `rem`, damit die Browser-Einstellung „große Schrift“ wirkt.
+- Zurück-Taste am Handy schließt das Blatt (History API).
+- App-Symbol für den Startbildschirm (Web-App-Manifest) plus kurze Anleitung im Kontomenü.
+- Link zu einem Spiel teilen, der direkt die Spielansicht öffnet.
+- Bildschirm „Sammlung importieren“ für den BGG-Export; Zustände für langsames oder fehlendes Netz.
+
+**Bewusst verworfen:** Zufallsgenerator, Bewertungen, Sortiermenü, Spieleabend-Planer. Jede Funktion bräuchte ein eigenes Bedienelement für eine selten gestellte Frage.
+
+## 11. Nächste Schritte
 
 1. BGG-Anwendung registrieren (Freigabe dauert).
 2. Prototyp weiter schleifen: Jakobs konkrete Korrekturen.
