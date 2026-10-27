@@ -2,33 +2,34 @@
 
 Private Website, auf der Familie und Freunde Jakobs Brettspielsammlung sehen, filtern und Spiele ausleihen können.
 
-**Aktueller Stand:** Version 0.2, klickbarer Prototyp v2 vom 26. Oktober 2026.
+**Aktueller Stand:** Version 0.3, klickbarer Prototyp v3 vom 27. Oktober 2026.
 
 ## Ordner
 
 | Pfad | Inhalt |
 |---|---|
-| `prototyp/v2-2026-10-26/` | Prototyp v2 (aktuell): `index.html` identisch mit der veröffentlichten Version, `index-offline.html` als eigenständige Datei mit eingebetteten Schriften |
+| `prototyp/v3-2026-10-27/` | Prototyp v3 (aktuell): `index.html` identisch mit der veröffentlichten Version, `index-offline.html` als eigenständige Datei mit eingebetteten Schriften |
+| `prototyp/v2-2026-10-26/` | Prototyp v2 (Referenz), gleicher Aufbau |
 | `prototyp/v1-2026-10-26/` | Prototyp v1 (Referenz, wird nie verändert), gleicher Aufbau |
 | `docs/konzept.md` | Alle Entscheidungen: Umfang, Status-Logik, Design-Leitlinien, Tokens, Datenmodell, BGG, Technik, offene Ideen, nächste Schritte |
 | `docs/design-brief.md` | Qualitätsmaßstab für die Gestaltung |
-| `docs/screenshots-v1/`, `docs/screenshots-v2/` | Referenzbilder (Handy und Desktop, hell und dunkel) |
+| `docs/screenshots-v1/` bis `docs/screenshots-v3/` | Referenzbilder (Handy und Desktop, hell und dunkel) |
 | `docs/schriften-lizenz/` | Lizenzen der eingebetteten Schriften (SIL OFL 1.1) |
 | `CHANGELOG.md` | Was sich in welcher Version geändert hat |
 
 ## Prototyp ansehen
 
-`index-offline.html` im Browser öffnen. Oben in der Prototyp-Leiste zwischen Lisa (Mitglied), Jakob (Verwalten), dem ersten Login und der Anmeldeseite wechseln.
+`index-offline.html` im Browser öffnen. Oben in der Prototyp-Leiste zwischen Lisa (Mitglied), Jakob (Verwalten), dem ersten Login, der Anmeldeseite und dem Schaufenster wechseln. „Puzzles als“ schaltet zwischen den beiden Puzzle-Varianten um.
 
 ## Zu einem früheren Stand zurück
 
 Jede Version ist mehrfach gesichert:
 
 1. **Ordner:** Jede Version hat ihren eigenen Ordner unter `prototyp/`. Ältere Ordner werden nie überschrieben.
-2. **Git-Tags:** `v0.1-prototyp` (v1) und `v0.2-prototyp` (v2).
+2. **Git-Tags:** `v0.1-prototyp` (v1), `v0.2-prototyp` (v2) und `v0.3-prototyp` (v3).
    - Alles anzeigen, was seit v1 geändert wurde: `git diff v0.1-prototyp`
    - Ganzes Projekt auf einen Stand setzen: `git checkout v0.1-prototyp` (zurück zur Gegenwart: `git switch main`)
-   - Neuen Versuch ab einem Stand starten: `git switch -c neuer-versuch v0.2-prototyp`
+   - Neuen Versuch ab einem Stand starten: `git switch -c neuer-versuch v0.3-prototyp`
 3. **Links auf claude.ai:** „Spieleschrank v1“ ist eingefroren. „Spieleschrank“ ist die Arbeitsversion und zeigt immer den neuesten Stand. Verlässlich zurück kommst du über Ordner und Git-Tags.
 
 ## Regel für Änderungen

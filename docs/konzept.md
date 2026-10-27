@@ -1,6 +1,6 @@
 # Spieleschrank: Konzept und Entscheidungen
 
-Stand: 26. Oktober 2026, Version 0.2 (Prototyp v2). Was sich gegenüber v1 geändert hat, steht in `CHANGELOG.md`; die Fassung zu v1 liegt im Git-Tag `v0.1-prototyp`.
+Stand: 27. Oktober 2026, Version 0.3 (Prototyp v3). Was sich je Version geändert hat, steht in `CHANGELOG.md`; frühere Fassungen dieses Dokuments liegen in den Git-Tags `v0.1-prototyp` und `v0.2-prototyp`.
 
 Dieses Dokument hält alles fest, was bis zum ersten Prototyp entschieden wurde. Es ist die Referenz, gegen die spätere Änderungen geprüft werden.
 
@@ -51,7 +51,7 @@ Eine private Website, auf der Familie und Freunde jederzeit Jakobs Brettspielsam
 
 1. **Hosting:** komplett bei null → VPS in der EU, eigene (Sub-)Domain, HTTPS über Caddy.
 2. **BGG-Sammlung:** großteils auf BGG erfasst, aber nicht vollständig, wächst ständig → einmaliger Import der als „besitze ich“ markierten Spiele, danach Neuzugänge über „+ Spiel“ mit BGG-Suche. Optional später: „Mit BGG abgleichen“ zeigt nur Spiele, die auf BGG stehen und in der App fehlen.
-3. **Leihdauer:** variabel pro Ausleihe. Beim Annehmen: 2 Wochen / 1 Monat / Datum / Offen. Vorausgewählt ist die zuletzt gewählte Option.
+3. **Leihdauer:** variabel pro Ausleihe. Seit v3 wählt die Person schon in der Anfrage einen Abholtag und ein bis drei Rückgabetage, alle innerhalb von drei Wochen (Abschnitt 11). Jakob nimmt wie gewünscht an, wählt andere Tage oder verleiht „offen“. (v1/v2: Jakob wählte beim Annehmen 2 Wochen / 1 Monat / Datum / Offen.)
 4. **Sichtbarkeit:** pro Ausleihe ein Schalter „Für alle sichtbar“. An: alle sehen „Gerade bei Lisa, bis 9. Nov.“. Aus: alle anderen sehen nur „Gerade verliehen“. Jederzeit nachträglich umschaltbar. Überfällig in Rot sehen nur Jakob und die ausleihende Person.
 
 ---
@@ -78,7 +78,7 @@ Eine private Website, auf der Familie und Freunde jederzeit Jakobs Brettspielsam
 **WhatsApp ohne Backend:** Alle Nachrichten laufen über `wa.me`-Links mit vorausgefülltem Text. Mit hinterlegter Handynummer öffnet sich direkt der richtige Chat, ohne Nummer wählt man den Kontakt in WhatsApp aus. Gesendet wird immer erst, wenn man selbst auf Senden tippt.
 
 ### Bewusst später (oder nie)
-Spieleabend-Planer, Partien-Log, Bewertungen, Wunschliste, Geschenk-Modus, QR-Sticker, Direkt-Weitergabe, Statistiken, Gemeinschafts-Bibliothek mit mehreren Besitzern. Das Feld `besitzer_id` bleibt trotzdem im Datenmodell, damit spätere Erweiterungen keinen Umbau brauchen.
+Spieleabend-Planer, Partien-Log, Bewertungen, Direkt-Weitergabe, Statistiken, Gemeinschafts-Bibliothek mit mehreren Besitzern. (Eigene Listen und „Zu verschenken“ kamen in v3 dazu; QR-Sticker hat Jakob ausgeschlossen.) Das Feld `besitzer_id` bleibt trotzdem im Datenmodell, damit spätere Erweiterungen keinen Umbau brauchen.
 
 **Prüffrage für jede neue Funktion:** Beantwortet sie eine Frage, die Familie und Freunde wirklich stellen? *Was hast du? Hast du es gerade da? Kann ich es haben? Bis wann habe ich es?*
 
@@ -91,13 +91,17 @@ Der Status eines Spiels wird **nie von Hand gesetzt**, sondern aus den Ausleih-E
 Anfrage und Ausleihe sind **ein** Eintrag mit Status:
 
 ```
+vorgemerkt ──(Jakob gibt Bescheid, Person wählt Zeitraum)──┐
+                                                           ▼
 angefragt ──► reserviert ──► verliehen ──► zurück
     │              (angenommen,     (übergeben,
-    ├─► abgelehnt   noch nicht       Fälligkeit läuft)
-    └─► zurückgezogen übergeben)
+    ├─► abgelehnt   noch nicht       läuft bis zum
+    └─► zurückgezogen übergeben)     letzten Rückgabetag)
 ```
 
-- Eine Anfrage auf ein verliehenes oder reserviertes Spiel ist automatisch eine **Vormerkung**. Reihenfolge nach Zeitpunkt.
+- Ist das Spiel verliehen oder reserviert, merkt man es **vor** (ohne Daten). Reihenfolge nach Zeitpunkt. Nach der Rückgabe wird es nicht automatisch frei: Jakob tippt „Bescheid geben“, dann wählt die erste Person ihren Zeitraum und daraus wird eine normale Anfrage.
+- Überfällig ist eine Ausleihe erst nach dem letzten gewählten Rückgabetag. „Offen“ verliehene Spiele werden nie überfällig.
+- Erweiterungen, die mit einem Basisspiel mitgehen, hängen am selben Eintrag (`extras`). Ihr Status wird genauso berechnet.
 - Annehmen geht erst, wenn das Spiel frei ist.
 - Die Fälligkeit startet bei der Übergabe (außer bei festem Datum). Beim direkten Verleihen startet sie sofort.
 - Bei der Rückgabe zeigt der Hinweis, wer es vorgemerkt hat.
@@ -105,7 +109,7 @@ angefragt ──► reserviert ──► verliehen ──► zurück
 - Eine Ablehnung bleibt für das Mitglied sichtbar, bis es sie ausblendet (`seen`). Eine neue Anfrage auf dasselbe Spiel blendet sie automatisch aus.
 - Direkt verleihen an jemanden, der das Spiel schon angefragt hat, wandelt dessen Anfrage um, statt einen zweiten Eintrag anzulegen.
 
-**Vorrang der Abzeichen:** eigener Stand > Verliehen/Reserviert > Nur gemeinsam > offene Anfragen (nur Jakob) > Neu. So sieht man auch bei einem nicht verleihbaren Spiel, dass es gerade weg ist.
+**Vorrang der Abzeichen:** eigener Stand > Verliehen/Reserviert > offene Anfragen (nur Jakob) > Zu verschenken > Nur gemeinsam. „Neu“ ist seit v3 kein Abzeichen mehr, sondern ein kleines Etikett. So sieht man auch bei einem nicht verleihbaren Spiel, dass es gerade weg ist.
 
 ### Abzeichen auf den Kacheln (nur für Ausnahmen)
 
@@ -118,7 +122,9 @@ angefragt ──► reserviert ──► verliehen ──► zurück
 | Nur gemeinsam | alle | nicht verleihbar |
 | Bei dir / Abholbereit / Angefragt / Vorgemerkt | nur die betroffene Person | eigener Stand |
 | Abgelehnt | nur die betroffene Person | Ablehnung noch nicht ausgeblendet |
-| Neu | alle | in den letzten 30 Tagen hinzugekommen |
+| Gewünscht | nur die betroffene Person | „Hätte ich gern“ bei einem Spiel zum Verschenken |
+| Zu verschenken | alle | von Jakob zum Verschenken markiert |
+| Neu (kleines Etikett unter dem Titel, kein Abzeichen) | alle | in den letzten 2 bis 4 Wochen hinzugekommen, einstellbar |
 | Rückgabe fällig | nur die betroffene Person | eigene Ausleihe überfällig |
 | Überfällig | nur Jakob | fremde Ausleihe überfällig |
 | 1 Anfrage / N Anfragen | nur Jakob | offene Anfragen |
@@ -192,10 +198,16 @@ Mitglieder können bei Einmalspielen „Kenn ich schon“ markieren. Jakob sieht
 
 | Tabelle | Wichtigste Felder |
 |---|---|
-| users | Name, Benutzername, Passwort-Hash, Rolle (admin/mitglied), Avatar, Handynummer (optional), Passwort-ändern-Pflicht |
-| games | bgg_id, Titel, Anzeigename, alternative Titel, Spieler min/max, beste Spielerzahl (BGG-Umfrage), Dauer min/max, Mindestalter, Schwierigkeit (1 bis 3, aus BGG-Gewicht), Genres (eigene Tags), Sprache der Ausgabe, textlastig (aus BGG-Sprachabhängigkeit), Kurzbeschreibung, Cover-Datei, Hauptfarbe des Covers, **besitzer_id**, verleihbar, spielart (normal / einmalig_intakt / einmalig_verbraucht), durchgespielt, hinzugefügt_am, private Notiz |
-| loans | Spiel, Person, Status (angefragt / reserviert / verliehen / zurück / abgelehnt / zurückgezogen), Wunsch (asap/Datum), Wunschdatum, Nachricht, Leihdauer (2w/1m/date/open), festes Datum, sichtbar (ja/nein), verliehen_am, fällig_am, zurück_am, Ablehnungsgrund, Ablehnung gesehen |
+| users | Name, Benutzername, Passwort-Hash, Rolle (admin/mitglied), Avatar, Handynummer (optional), **Ort** (optional, nur für Jakob), letzter Besuch, Passwort-ändern-Pflicht |
+| games | bgg_id, Titel, Anzeigename, alternative Titel, Spieler min/max, beste Spielerzahl (BGG-Umfrage), Dauer min/max, Mindestalter, Schwierigkeit (1 bis 3, aus BGG-Gewicht), Genres (eigene Tags), Sprache der Ausgabe, textlastig (aus BGG-Sprachabhängigkeit), Kurzbeschreibung, Cover-Datei, Hauptfarbe des Covers, **besitzer_id**, verleihbar, spielart (normal / einmalig_intakt / einmalig_verbraucht), durchgespielt, hinzugefügt_am, private Notiz, **art** (spiel / erweiterung / puzzle), **Empfehlungszeile** von Jakob, **Regelheft** (PDF-Datei, Sprache, Größe), **zu_verschenken**, verschenkt_an / verschenkt_am |
+| Erweiterung (Felder in games) | basisspiel_id, eigenständig spielbar (ja/nein), erweitert Spielerzahl auf (z. B. 5–6), eigene Dauer. Nur Erweiterungen mit eigener Schachtel. |
+| Puzzle (Felder in games) | Teilezahl, Marke, fertige Größe, Motiv, fehlende Teile, eigenes Foto der Schachtel, selbst fertig gepuzzelt |
+| loans | Spiel, Person, Status (vorgemerkt / angefragt / reserviert / verliehen / zurück / abgelehnt / zurückgezogen), **Abholtag**, **Rückgabetage** (1 bis 3, innerhalb von 21 Tagen), offen (ja/nein), **extras** (mitgeliehene Erweiterungen), Nachricht, sichtbar (ja/nein), übergeben_am, zurück_am, Ablehnungsgrund, Ablehnung gesehen, Bescheid gegeben (bei Vormerkungen), **Verlängerung** (angefragt / ok / abgelehnt, höchstens einmal, +14 Tage), Foto-Hinweis gezeigt/weggetippt |
 | played | Person, Spiel („kenn ich schon“) |
+| photos | Ausleihe, Person, Datei (verkleinert, ohne Standortdaten), Datum, von Jakob mit Herz markiert. Nur Jakob sieht sie. |
+| lists | Person, Name, Spiele. Privat, Jakob sieht sie nicht. Die „Merkliste“ gibt es immer. |
+| gift_wishes | Spiel, Person, Zeitpunkt („Hätte ich gern“ bei Spielen zum Verschenken) |
+| settings | Dauer der Neu-Markierung (2 bis 4 Wochen), Schaufenster-Token |
 | access_requests | Name, Kontakt, Nachricht, Status |
 
 **Genres (eigene Tags):** Familie, Strategie, Party, Kooperativ, Rätsel & Krimi, Zu zweit, Kartenspiel. Beim Import über eine Zuordnungstabelle aus den BGG-Kategorien vorbelegt, von Jakob korrigierbar.
@@ -237,7 +249,11 @@ Quellen (Stand August 2026, Dokumentation eines Open-Source-Projekts; verbindlic
 
 **Hosting-Schritte:** Domain kaufen → VPS anlegen → DNS auf den Server → Docker Compose mit PocketBase und Caddy (holt HTTPS automatisch). Dazu: `noindex`, Login-Versuche begrenzen, keine Tracker, nächtliches Backup.
 
-**Benachrichtigungen (geplant):** in der App (Zähler); an Jakob per Telegram-Bot; an Mitglieder zunächst über einen WhatsApp-Link mit vorausgefülltem Text. Web-Push nur als Zusatz, weil er am iPhone erst nach „Zum Home-Bildschirm“ funktioniert.
+**Benachrichtigungen (geplant):** in der App (Zähler); an Mitglieder über einen WhatsApp-Link mit vorausgefülltem Text, den Jakob selbst abschickt. Web-Push höchstens als Zusatz, weil er am iPhone erst nach „Zum Home-Bildschirm“ funktioniert. **Kein Telegram- oder sonstiger Bot** (von Jakob ausgeschlossen, 27.10.2026).
+
+**Regelhefte und Fotos:** PDFs und Fotos liegen im Dateispeicher von PocketBase und werden nur an angemeldete Personen ausgeliefert (Fotos nur an Jakob). Fotos werden schon im Browser verkleinert; dabei fallen Standortdaten (EXIF/GPS) weg.
+
+**Schaufenster:** eigene, schreibgeschützte Route `/schaufenster/<token>` ohne Login. Zeigt Cover, Titel und Eckdaten, nie Personen, Ausleihen oder Regelhefte. Neuer Link = neuer Token, der alte ist sofort ungültig.
 
 ---
 
@@ -246,26 +262,30 @@ Quellen (Stand August 2026, Dokumentation eines Open-Source-Projekts; verbindlic
 | Version | Ordner | Eingefrorener Stand |
 |---|---|---|
 | v1 | `prototyp/v1-2026-10-26/` | Artifact „Spieleschrank v1“, Git-Tag `v0.1-prototyp` |
-| v2 | `prototyp/v2-2026-10-26/` | Git-Tag `v0.2-prototyp`; die Arbeitsversion „Spieleschrank“ zeigt aktuell v2 |
+| v2 | `prototyp/v2-2026-10-26/` | Git-Tag `v0.2-prototyp` |
+| v3 | `prototyp/v3-2026-10-27/` | Git-Tag `v0.3-prototyp`; die Arbeitsversion „Spieleschrank“ zeigt aktuell v3 |
 
 Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-offline.html` mit eingebetteten Schriften.
 
-### Prüfung von v2
-- Barrierefreiheits-Audit (axe-core) in allen Hauptzuständen hell und dunkel: keine Verstöße.
-- Kein seitliches Überlaufen von 320 px bis Desktop, auch nicht mit offenen Blättern.
-- Alle neuen Abläufe Ende zu Ende durchgespielt (Ablehnung sichtbar, direkt verleihen, Reservierung absagen, erster Login, Rückgängig, Tastaturfokus).
+### Prüfung von v3
+- Barrierefreiheits-Audit (axe-core) in allen Hauptzuständen, hell und dunkel: Regal, Spielansicht mit Erweiterungen, Anfrage mit Kalender, Meine, Verwalten, Annehmen mit anderen Tagen, Puzzle hinzufügen, Katalog, Schaufenster, erster Login, Anmeldeseite, Puzzles als Regalbrett. Keine Verstöße.
+- Kein seitliches Überlaufen bei 320 px (Regal, Kalender, Verwalten) und 390 px.
+- Kalender per Tastatur: Pfeiltasten wandern über Wochen- und Monatsgrenzen, das Raster rückt mit.
+- Last: 183 Spiele, Filter-Tipp ca. 0,1 bis 0,15 s.
+- Alle neuen Abläufe Ende zu Ende durchgespielt (Abschnitt 11), ohne Fehler in der Konsole.
 
 ### Was die Prototypen enthalten
-- Prototyp-Leiste oben: Ansicht als Lisa (Mitglied), Jakob (Verwalten), erster Login (Oma Erika) oder Anmeldeseite.
-- 26 Beispielspiele, 6 Personen, Beispiel-Ausleihen in allen Zuständen (verliehen, überfällig, reserviert, angefragt, vorgemerkt, nicht sichtbar).
-- Alle Abläufe aus Abschnitt 3 sind klickbar.
+- Prototyp-Leiste oben: Ansicht als Lisa (Mitglied), Jakob (Verwalten), erster Login (Oma Erika), Anmeldeseite oder Schaufenster. Ab v3 zusätzlich „Puzzles als: Umschalter | Regalbrett“ zum Vergleichen.
+- v3: 26 Spiele, 8 Erweiterungen (davon eine eigenständig spielbar), 11 Puzzles, 7 Personen mit Ort, Ausleihen in allen Zuständen inklusive Vormerkung mit Bescheid, Verlängerungsanfrage, Wunsch auf ein Spiel zum Verschenken, Fotos und Listen.
+- Alle Abläufe aus den Abschnitten 3 und 11 sind klickbar.
 
 **Simuliert bzw. Platzhalter**
-- Cover sind generierte Platzhalter (abstrakte Muster pro Spiel). Im Betrieb kommen die BGG-Cover.
-- BGG-Suche nutzt eine kleine Beispielliste (Akropolis, Sky Team, Detective, Azul, …).
-- Kein Backend: Nach dem Neuladen ist alles im Ausgangszustand.
-- Jedes Passwort funktioniert; anmelden als `lisa`, `jakob` oder `erika`.
-- Beste Spielerzahl, Sprache der Ausgabe und Neuzugänge sind Beispielwerte.
+- Cover sind generierte Platzhalter (abstrakte Muster pro Spiel, Puzzles im Querformat mit Puzzle-Raster). Im Betrieb kommen die BGG-Cover bzw. Jakobs Fotos.
+- BGG-Suche nutzt eine kleine Beispielliste (Akropolis, Sky Team, Detective, Azul, drei Erweiterungen, …).
+- Kein Backend: Nach dem Neuladen ist alles im Ausgangszustand. Hochgeladene Fotos und PDFs bleiben nur bis zum Neuladen.
+- Jedes Passwort funktioniert; anmelden als `lisa`, `jakob`, `erika` oder `michael.gruber`.
+- Beispielfotos sind gezeichnete Platzhalter. Regelheft-Links zeigen nur, wo das PDF hinkommt.
+- Katalog: „Drucken oder als PDF speichern“ gibt es nur in der eigenständigen Datei (`index-offline.html`), in der Vorschau auf claude.ai nicht.
 - Die Online-Version lädt die Schriften von Google Fonts; ohne Internet nimmt sie Systemschriften. Die Offline-Variante sieht immer gleich aus.
 
 **Abweichung vom ursprünglichen Plan:** Jakob sieht „Verwalten“ statt „Meine“, damit auch er nur zwei Bereiche hat.
@@ -275,9 +295,9 @@ Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-of
 ## 10. Offene Ideen aus der Review (noch nicht umgesetzt)
 
 **Kleine Verbesserungen**
-- Suche findet auch englische Originaltitel (z. B. „Wingspan“ → Flügelschlag) und „ue“-Schreibweisen.
-- Nach einer Rückgabe die nun annehmbare Vormerkung oben hervorheben („Jetzt frei“).
-- Verlauf pro Spiel, nur für Jakob („Zuletzt bei Max (Okt.), Lisa (Sep.)“).
+- Suche findet auch englische Originaltitel (z. B. „Wingspan“ → Flügelschlag). „ue“-Schreibweisen findet sie seit v3.
+- ~~Nach einer Rückgabe die nun annehmbare Vormerkung oben hervorheben~~ → seit v3 „Wieder da, vorgemerkt“ mit „Bescheid geben“.
+- ~~Verlauf pro Spiel, nur für Jakob~~ → seit v3 als Spielepass.
 
 **Für den echten Bau**
 - Echte Cover haben verschiedene Seitenverhältnisse: ganze Schachtel auf ihrer Hauptfarbe zeigen, nie beschneiden.
@@ -287,7 +307,7 @@ Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-of
 - Link zu einem Spiel teilen, der direkt die Spielansicht öffnet.
 - Bildschirm „Sammlung importieren“ für den BGG-Export; Zustände für langsames oder fehlendes Netz.
 
-**Bewusst verworfen:** Zufallsgenerator, Bewertungen, Spieleabend-Planer (vorerst). Jede Funktion bräuchte ein eigenes Bedienelement für eine selten gestellte Frage.
+**Bewusst verworfen:** Zufallsgenerator, Bewertungen. Jede Funktion bräuchte ein eigenes Bedienelement für eine selten gestellte Frage.
 
 **Von Jakob ausgeschlossen (27.10.2026):**
 - **Keine KI, keine Bots** (auch kein Telegram- oder WhatsApp-Bot, keine Bilderkennung, keine KI-Regelhilfe).
@@ -300,9 +320,9 @@ Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-of
 - Kinder-Modus.
 - Aus der Website eine App machen, wenn alles passt.
 
-## 11. Beschlossen für v3 (noch nicht umgesetzt)
+## 11. Beschlossen für v3 (umgesetzt in Prototyp v3)
 
-Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
+Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen. Wie v3 die Punkte umsetzt, steht am Ende des Abschnitts.
 
 **Ausleihzeitraum**
 - Bei einer Anfrage wählt man einen Abholtag und ein bis drei Rückgabetage. Die Rückgabetage dürfen beliebig verteilt sein, müssen aber alle innerhalb von drei Wochen ab dem Abholtag liegen.
@@ -367,10 +387,35 @@ Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
 **Wohnort der Personen**
 - Jakob kann bei Personen einen Ort hinterlegen (z. B. „Michael Gruber, Mauthausen“) und als Admin danach filtern.
 
+### So setzt v3 das um
+
+**Kalender: rollendes Raster statt Monatsblatt.** Ein Monatsblatt bricht genau dort, wo es wehtut: Wer am 29. abholt, findet die Rückgabetage im nächsten Monat und muss blättern, ohne den Abholtag noch zu sehen. v3 zeigt deshalb immer fünf Wochen ab dem Montag vor dem Abholtag. Abholtag plus drei Wochen passen so immer auf einen Blick. Tage nach der Drei-Wochen-Grenze oder der nächsten Ausleihe sind ausgegraut, der 1. eines Monats trägt ein kleines Monatskürzel. Erster Tipp = Abholtag, weitere Tipps = Rückgabetage (bis zu drei, Tippen auf einen gewählten Tag nimmt ihn wieder weg). Ein Satz darunter fasst zusammen: „Du holst es ab Do., 29. Okt. und bringst es am 5. oder 12. Nov. zurück.“
+
+**Puzzles: zwei Varianten zum Vergleichen** (Prototyp-Leiste „Puzzles als“):
+1. *Umschalter* „Spiele | Puzzles“ über der Suche. Jede Seite hat eigene, passende Filter (Puzzles: Teile, Nur verfügbare, Motiv und Marke). Klar getrennt, kostet aber eine Zeile.
+2. *Regalbrett*: kein Umschalter. Puzzles stehen als eigenes Regalbrett zwischen „Leih mich!“ und „Alle Spiele“, „Alle Puzzles“ führt in die Puzzle-Ansicht mit Zurück-Link. Ruhiger, Puzzles sind aber weniger prominent.
+In beiden Varianten findet die Suche Spiele und Puzzles gemeinsam. Weitere geprüfte Möglichkeiten: Puzzles als Wert im Art-Filter (versteckt sie zu tief für 20 Stück) und eine reine gemeinsame Liste (Filter wie Spielerzahl passen nicht zu Puzzles).
+
+**Erweiterungen:** eine leichte Schachtelkante hinter dem Cover zeigt, dass es Erweiterungen gibt. In der Spielansicht klappt „2 Erweiterungen“ die Liste auf; beim Anfragen setzt man einen Haken bei den gewünschten. „Erweiterungen zeigen“ steckt unter „Mehr Filter“. Der Personen-Filter rechnet Erweiterungen mit ein und sagt es auf der Kachel („bis 6 mit Erw.“).
+
+**Spieldauer:** sieben Stufen von „bis 20 Min“ bis „länger als 2 Std“. Ist auch eine Personenzahl gewählt, schätzt v3 die Dauer für genau diese Zahl (lineare Schätzung zwischen kürzester und längster Angabe) und zeigt sie auf der Kachel („ca. 2 Std zu sechst“).
+
+**Startseite:** Sortierung „Für dich“ (eigene häufige Ausleihen, dann insgesamt beliebte; schon gespielte Einmalspiele zählen nicht) oder A–Z. Jakob sieht „Beliebt“.
+
+**Fotos:** kleines Kamera-Symbol neben „Bei dir“ und bei „Zuletzt zurückgegeben“; ein einmaliger, wegtippbarer Satz unter der Ausleihe. Bilder werden im Browser verkleinert, Standortdaten entfallen. Jakob sieht sie unter „Fotos vom Spieleabend“ und im Spielepass, kann ein Herz vergeben; die Person sieht dann „Jakob hat sich über deine Fotos gefreut.“
+
+**Listen:** Lesezeichen-Symbol links neben dem Hauptknopf der Spielansicht. Ein Tipp legt das Spiel auf die Merkliste (Hinweis mit „Andere Liste“). Ist es schon gemerkt, öffnet der Tipp ein kleines Blatt mit allen Listen zum An- und Abhaken und für neue Listen. Unter „Meine“ erscheinen sie als Cover-Reihen.
+
+**Verlauf:** „Früher ausgeliehen (n)“ zugeklappt am Ende von „Meine“. Spielepass in Jakobs Spielansicht.
+
+**Zu verschenken:** Abzeichen auf der Kachel, Filter „Nur zu verschenken“ unter „Mehr Filter“, Knopf „Hätte ich gern“. Jakob sieht die Wünsche gesammelt und verschenkt mit einem Tipp; das Spiel wandert dann in „Verschenkt“ unter Werkzeuge.
+
+**Jakobs Werkzeuge** (unten in Verwalten): Katalog (Spiele, Erweiterungen, Puzzles, sortiert nach Titel oder Genre), Schaufenster-Link (kopieren, neuen Link erzeugen mit Bestätigung), Spiele ohne Regelheft, Verschenkt, Einstellungen (Dauer der Neu-Markierung).
+
 ## 12. Nächste Schritte
 
 1. BGG-Anwendung registrieren (Freigabe dauert).
-2. Prototyp weiter schleifen: Jakobs konkrete Korrekturen.
+2. v3 durchklicken: Puzzles als Umschalter oder Regalbrett entscheiden, Kalender am Handy testen, konkrete Korrekturen sammeln.
 3. Domain und VPS besorgen.
 4. PocketBase-Schema nach Abschnitt 6 anlegen.
 5. Prototyp an PocketBase anbinden (Login, Spiele, Ausleihen).
