@@ -11,6 +11,10 @@
 - **Alles muss nahtlos ineinandergreifen.** Jede neue Funktion fügt sich in bestehende Ansichten ein, statt eigene Bildschirme oder Bereiche aufzumachen.
 - **Im Zweifel:** tiefer verstecken oder weglassen.
 
+**Die Maxime gilt für die Ansicht von Familie und Freunden.** Jakobs eigene Ansicht als Eigentümer darf komplexer sein und mehr Funktionen bieten, notfalls auf Kosten der Übersicht.
+
+**Harte Ausschlüsse:** keine KI, keine Bots, kein QR-Code, kein NFC.
+
 **Kern** (darf prominent sein): Regal ansehen und filtern, Spiel ansehen, Ausleihen anfragen oder vormerken, „Meine“, Verwalten (annehmen, ablehnen, übergeben, zurückbekommen, verleihen), Spiel hinzufügen.
 
 **Zusatz** (immer dezent), zum Beispiel: Fotos vom Spieleabend, Regelhefte, Verlängerung, Erweiterungen, „Kenn ich schon“, WhatsApp-Knöpfe, Neu-Markierung.

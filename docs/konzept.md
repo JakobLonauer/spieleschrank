@@ -12,6 +12,8 @@ Dieses Dokument hält alles fest, was bis zum ersten Prototyp entschieden wurde.
 >
 > **Alles, was nicht zum absoluten Kern gehört, wird dezent und nicht aufdringlich umgesetzt, auch wenn Jakob es ausdrücklich bestellt:** kleine Icon-Buttons, ruhige Textlinks, Hinweise nur dort, wo man ohnehin hinschaut. **Zusatzfunktionen dürfen das Interface nie blockieren, überladen oder unterbrechen.** Alles muss nahtlos und poliert ineinandergreifen. Im Zweifel tiefer verstecken oder weglassen.
 >
+> **Die Maxime gilt für die Ansicht von Familie und Freunden.** Jakobs eigene Ansicht als Eigentümer darf komplexer sein und mehr Funktionen bieten, notfalls auf Kosten der Übersicht.
+>
 > Kern und Zusatz sind in `CLAUDE.md` abgegrenzt.
 
 ---
@@ -26,6 +28,10 @@ Eine private Website, auf der Familie und Freunde jederzeit Jakobs Brettspielsam
 - Einmalspiele (Krimi, Escape), die Jakob schon gelöst hat, werden als besonders gute Verleihkandidaten hervorgehoben
 
 **Leitsatz:** Lieber weniger Funktionen, die dafür hervorragend funktionieren. Die Zielgruppe umfasst ältere Verwandte, ein überladenes Interface würde sie überfordern.
+
+**Wofür es den Spieleschrank gibt (Jakob, 27.10.2026):** Jakobs Spiele sollen von Familie und Freunden genutzt werden. Niemand soll für ein Spiel zahlen, das Jakob schon hat und verleihen kann. Jakob freut sich, etwas teilen zu können und damit einen kleinen Dienst an der Gemeinschaft zu leisten. Langfristig teilen die anderen dadurch auch mehr mit ihm, entwickeln Freude am Hobby und wollen mehr spielen, und am Ende wird auch mehr mit Jakob gespielt.
+
+**Grundannahme:** Das Ausleihen ist nur das Mittel. Der Engpass ist, überhaupt an das Spiel zu kommen. Ob jemand mit den Regeln kämpft, ist für die App vernachlässigbar.
 
 ---
 
@@ -281,7 +287,18 @@ Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-of
 - Link zu einem Spiel teilen, der direkt die Spielansicht öffnet.
 - Bildschirm „Sammlung importieren“ für den BGG-Export; Zustände für langsames oder fehlendes Netz.
 
-**Bewusst verworfen:** Zufallsgenerator, Bewertungen, Sortiermenü, Spieleabend-Planer. Jede Funktion bräuchte ein eigenes Bedienelement für eine selten gestellte Frage.
+**Bewusst verworfen:** Zufallsgenerator, Bewertungen, Spieleabend-Planer (vorerst). Jede Funktion bräuchte ein eigenes Bedienelement für eine selten gestellte Frage.
+
+**Von Jakob ausgeschlossen (27.10.2026):**
+- **Keine KI, keine Bots** (auch kein Telegram- oder WhatsApp-Bot, keine Bilderkennung, keine KI-Regelhilfe).
+- **Kein QR-Code und kein NFC.**
+- Einstieg über Stimmungen statt Filter.
+- Hilfen rund um Regeln (Erklär-Sprachnachricht, Schnellstart-Karten); der Regelheft-Link bleibt.
+
+**Für später gemerkt:**
+- Spieleabende über die Plattform ausmachen.
+- Kinder-Modus.
+- Aus der Website eine App machen, wenn alles passt.
 
 ## 11. Beschlossen für v3 (noch nicht umgesetzt)
 
@@ -295,7 +312,8 @@ Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
 
 **Vormerkung bleibt**
 - Ein zurückgegebenes Spiel wird nicht automatisch wieder frei, weil Jakob es vielleicht selbst weiterspielen will.
-- Vorschlag (noch zu bestätigen): Vormerken ohne Daten; nach der Rückgabe wählt Jakob „Bescheid geben“ oder „Behalte ich vorerst“; optionaler Status „Spiele ich gerade selbst“.
+- Bestätigt: Vormerken ohne Daten. Nach der Rückgabe tippt Jakob „Bescheid geben“; die erste Person in der Reihe wählt dann ihren Zeitraum, daraus wird eine normale Anfrage. Ohne Bescheid bleibt die Vormerkung einfach bestehen.
+- Der Status „Spiele ich gerade selbst“ wurde nicht bestätigt und bleibt vorerst weg.
 
 **Fotos vom Spieleabend**
 - Personen können während oder nach der Ausleihe Fotos hochladen oder Jakob schicken. Nur Jakob sieht sie.
@@ -307,7 +325,8 @@ Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
 
 **Puzzles**
 - Derzeit ca. 20, wachsend, fast nur 1000 oder 500 Teile und weniger. Sichtbar für dieselben Personen wie die Spiele, gleiche Abläufe und Regeln.
-- Vorschlag (noch zu bestätigen): Umschalter „Spiele | Puzzles“ im Regal, Erfassung über eigenes Foto plus wenige Felder.
+- Der Umschalter „Spiele | Puzzles“ im Regal wird in v3 ausprobiert. Jakob ist nicht sicher, ob er die beste Lösung ist; Alternativen werden verglichen.
+- Erfassung über eigenes Foto der Schachtel plus wenige Felder (Teilezahl, Marke, fertige Größe, Motiv, fehlende Teile). Keine KI.
 
 **Erweiterungen**
 - Jakob kann zu Basisspielen Erweiterungen angeben (teils mehrere pro Spiel).
@@ -317,7 +336,36 @@ Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
 - Eine Erweiterung kann man auch ohne Basisspiel ausleihen.
 - Eigenständig spielbare Erweiterungen (Standalone und Erweiterung zugleich) bekommen einen eigenen Eintrag und stehen auch im Standard-Regal; zusätzlich erscheinen sie in der Erweiterungsliste ihres Basisspiels.
 - Nur ein Teil der Erweiterungen ist auf BGG erfasst. Der Import ordnet die erfassten automatisch zu; die übrigen fügt Jakob über die normale BGG-Suche hinzu. Ist der Treffer eine Erweiterung, fragt das Formular nach dem Basisspiel (aus den BGG-Daten vorausgefüllt, falls das Basisspiel schon im Regal steht).
-- Ideen aus der Ideenrunde, noch zu bestätigen: Filter rechnen Erweiterungen mit ein („mit Erweiterung bis 6“), Schachtelkante hinter dem Cover als Hinweis, Suche findet auch Erweiterungen, Empfehlungszeile von Jakob.
+- Bestätigt: Filter rechnen Erweiterungen mit ein („mit Erweiterung bis 6“), Schachtelkante hinter dem Cover als stiller Hinweis, Suche findet auch Erweiterungen, Empfehlungszeile von Jakob pro Spiel.
+
+**Startseite: vom Katalog zur Stimme**
+- Zuerst die Spiele, die die jeweilige Person selbst oft ausgeliehen hat, danach die Spiele, die insgesamt am häufigsten ausgeliehen werden.
+
+**Eigene Listen (privat)**
+- Jede Person kann sich Spiele markieren und einfache Listen anlegen, etwa „Will ich mal ausleihen“. Nur für sie selbst, Jakob sieht sie nicht.
+- Nimmt wenig Platz ein und erscheint nur dort, wo es sinnvoll ist.
+
+**Verlauf**
+- Jede Person hat eine kleine eigene Historie: welche Spiele sie wann und wie lange ausgeliehen hat.
+- Spielepass (Reisegeschichte einer Schachtel durch die Haushalte): vorerst nur für Jakob sichtbar.
+
+**Neu im Regal**
+- Neue Spiele werden etwa 2 bis 4 Wochen lang leicht und sehr dezent hervorgehoben, damit man beim Einloggen sieht, was neu ist.
+
+**Zu verschenken**
+- Jakob kann Spiele als „zu verschenken“ markieren.
+
+**Spieldauer-Filter**
+- Soll etwas ausgeklügelter werden als die drei Stufen in v2.
+
+**Schaufenster-Link**
+- Ein Link, den Jakob verschicken kann: abgespeckte Sicht auf die Sammlung ohne Login, ohne Ausleihen. Soll Lust machen, Zugangsdaten bei Jakob anzufragen.
+
+**Katalog für Jakob**
+- Ein Katalog der Sammlung, der sich auf Knopfdruck erstellen lässt.
+
+**Wohnort der Personen**
+- Jakob kann bei Personen einen Ort hinterlegen (z. B. „Michael Gruber, Mauthausen“) und als Admin danach filtern.
 
 ## 12. Nächste Schritte
 
