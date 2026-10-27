@@ -1,6 +1,6 @@
 # Spieleschrank: Konzept und Entscheidungen
 
-Stand: 27. Oktober 2026, Version 0.3 (Prototyp v3). Was sich je Version geändert hat, steht in `CHANGELOG.md`; frühere Fassungen dieses Dokuments liegen in den Git-Tags `v0.1-prototyp` und `v0.2-prototyp`.
+Stand: 27. Oktober 2026, Version 0.4 (Prototyp v4, Feinschliff). Was sich je Version geändert hat, steht in `CHANGELOG.md`; frühere Fassungen dieses Dokuments liegen in den Git-Tags `v0.1-prototyp` bis `v0.3-prototyp`.
 
 Dieses Dokument hält alles fest, was bis zum ersten Prototyp entschieden wurde. Es ist die Referenz, gegen die spätere Änderungen geprüft werden.
 
@@ -263,9 +263,23 @@ Quellen (Stand August 2026, Dokumentation eines Open-Source-Projekts; verbindlic
 |---|---|---|
 | v1 | `prototyp/v1-2026-10-26/` | Artifact „Spieleschrank v1“, Git-Tag `v0.1-prototyp` |
 | v2 | `prototyp/v2-2026-10-26/` | Git-Tag `v0.2-prototyp` |
-| v3 | `prototyp/v3-2026-10-27/` | Git-Tag `v0.3-prototyp`; die Arbeitsversion „Spieleschrank“ zeigt aktuell v3 |
+| v3 | `prototyp/v3-2026-10-27/` | Git-Tag `v0.3-prototyp` |
+| v4 | `prototyp/v4-2026-10-27/` | Git-Tag `v0.4-prototyp`; die Arbeitsversion „Spieleschrank“ zeigt aktuell v4 |
 
 Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-offline.html` mit eingebetteten Schriften.
+
+### v4: Feinschliff
+Gleiche Funktionen wie v3, nur ruhiger, wärmer und runder (Einzelheiten in `CHANGELOG.md`). Festgehalten für den echten Bau:
+- **Tokens:** wärmere Neutraltöne (`--bg #F3F4EE`, `--surface #FFFEFB`), Schatten `--sh-xs/-sm/-lg`, Dauern `--dur-1/2/3` (0,12 / 0,18 / 0,28 s), Feder-Kurve `--spring` für kleine Bestätigungen.
+- **Schrift in rem**, Bedienelemente mit `min-height` statt fester Höhe; Überschriften am Handy `min(Basis, max(vw-Grenze, 1,1–1,2 rem))`.
+- **Hover nur mit Maus** (`@media (hover: hover)`), Druck-Feedback überall per `:active`.
+- **Kalender:** gesperrte Tage mit `aria-disabled` statt `disabled`, damit Finger, Tastatur und Screenreader den Grund erfahren.
+- Verworfen: Filz-Körnung auf dem Seitenhintergrund (verdunkelt den Ton und erzeugt Kanten an Scrollleiste und Kopfzeile).
+
+### Prüfung von v4
+- Alle Abläufe aus v3 Ende zu Ende ohne Fehler; axe-core in allen Hauptzuständen hell und dunkel ohne Verstöße.
+- Kein Querscrollen bei 320 und 390 px, auch mit 150 % und 200 % Browserschrift (Regal, Spielansicht, Anfrage, Meine, Verwalten).
+- 183 Spiele: Filter-Tipp weiter etwa 0,1 s.
 
 ### Prüfung von v3
 - Barrierefreiheits-Audit (axe-core) in allen Hauptzuständen, hell und dunkel: Regal, Spielansicht mit Erweiterungen, Anfrage mit Kalender, Meine, Verwalten, Annehmen mit anderen Tagen, Puzzle hinzufügen, Katalog, Schaufenster, erster Login, Anmeldeseite, Puzzles als Regalbrett. Keine Verstöße.

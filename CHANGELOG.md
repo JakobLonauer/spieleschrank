@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.4-prototyp (27.10.2026)
+
+Feinschliff nach dem UI/UX-Brief: gleiche Funktionen, gleiche Gestalt, alles etwas ruhiger, wärmer und runder. Dazu drei reine Design-Tickets aus dem Verbesserungsplan.
+
+**Ruhiger und wärmer**
+- Wärmere Neutraltöne (Leinen statt kühlem Grau), das Filzgrün bleibt
+- Karten mit leisem Schatten statt harter Kanten; Popups und Hinweise mit weichem, tiefem Schatten
+- Kopfzeile liegt oben unsichtbar auf dem Tisch und wird erst beim Scrollen zur Milchglasfläche
+- Trennlinie über dem Fuß eines Blatts nur, solange darunter noch Inhalt steht
+- Schlanke Scrollleisten in den Farben der Oberfläche
+- Schachtelkanten der Erweiterungen leichter und mit Lichtkante
+
+**Große Schrift (Plan T08)**
+- Alle Schriftgrößen in rem: die Browser-Einstellung „große Schrift“ wirkt jetzt
+- Knöpfe, Chips, Felder und Kalendertage wachsen mit dem Text, statt ihn abzuschneiden
+- Überschriften wachsen mit, bleiben größer als der Fließtext und laufen nie aus dem Bildschirm
+- Geprüft bei 150 % und 200 % auf 320 und 390 px: nirgends Querscrollen
+
+**Weniger Reibung**
+- Kalender (Plan T04, erster Teil): gesperrte Tage sind antippbar und sagen, warum („Höchstens drei Wochen ab dem Abholtag“, „Schon vergeben“, „Schon vorbei“); per Tastatur erreichbar, Screenreader hören „nicht wählbar“
+- Hinweis bei mehr als drei Rückgabetagen ruhig statt rot
+- Anmeldung (Plan T10): „Vergessen?“ neben dem Passwort öffnet WhatsApp an Jakob mit fertigem Text samt Benutzername
+- Handy: erster Bildschirm zeigt früher Schachteln (Plan T09, erster Teil); Umschalter Spiele/Puzzles kompakter
+- Schaufenster am Handy: schmale Leiste statt halber Bildschirm
+- Spieltitel in Anfragen brechen linksbündig um; Spannen wie „5–6“ brechen nie am Strich
+- Eckdaten-Karten oben bündig; größere Tippfläche bei der Sortierung
+
+**Kleine Rückmeldungen**
+- Hover-Effekte nur auf Geräten mit Maus, am Handy bleibt nichts „hängen“
+- Druck-Feedback auf Tabs, Umschaltern, Sortierung, Zeilen und Werkzeugen
+- Herz, Merken und „Kenn ich schon“ antworten mit einem kurzen Federn; neue Zahlen im Tab hüpfen einmal
+- Gesperrter Kalendertag schüttelt sich kurz
+- Beim ersten Öffnen legen sich die Schachteln nacheinander ins Regal (einmalig)
+- Alles respektiert „Bewegung reduzieren“
+
+**Geprüft:** alle Abläufe aus v3 Ende zu Ende, axe-core in allen Hauptzuständen hell und dunkel ohne Verstöße, kein Überlaufen ab 320 px, große Schrift 150 % und 200 %, 183 Spiele flüssig.
+
 ## v0.3-prototyp (27.10.2026)
 
 Alle Entscheidungen für v3 aus der Exploration umgesetzt. Was nicht zum Kern gehört, sitzt als kleines Symbol oder ruhiger Link dort, wo man ohnehin hinschaut.
