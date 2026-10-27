@@ -291,7 +291,7 @@ Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
 - Bei einer Anfrage wählt man einen Abholtag und ein bis drei Rückgabetage. Die Rückgabetage dürfen beliebig verteilt sein, müssen aber alle innerhalb von drei Wochen ab dem Abholtag liegen.
 - Höchstdauer drei Wochen, auch für Puzzles. Einzige Ausnahme: Jakob kann selbst „offen“ (unbefristet) verleihen.
 - Überfällig erst nach dem letzten gewählten Rückgabetag.
-- Verlängerung kann man anfragen, dezent über einen kleinen Icon-Button. Jakob entscheidet.
+- Verlängerung kann man anfragen, dezent über einen kleinen Icon-Button. Höchstens einmal pro Ausleihe, immer um genau zwei Wochen. Jakob entscheidet. Umsetzung: Alle gewählten Rückgabetage verschieben sich um 14 Tage; nach einer Verlängerung verschwindet der Button. Bei „offen“ verliehenen Spielen gibt es keine Verlängerung.
 
 **Vormerkung bleibt**
 - Ein zurückgegebenes Spiel wird nicht automatisch wieder frei, weil Jakob es vielleicht selbst weiterspielen will.
@@ -313,6 +313,11 @@ Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
 - Jakob kann zu Basisspielen Erweiterungen angeben (teils mehrere pro Spiel).
 - Standardansicht und Suche zeigen nur Basisspiele; Erweiterungen lassen sich optional einblenden.
 - In der Spielansicht dezenter Hinweis auf vorhandene Erweiterungen; beim Ausleihen kann man sie zusätzlich zum Basisspiel auswählen.
+- Erfasst werden nur Erweiterungen mit eigener Schachtel. Promos und alles, was in der Grundschachtel liegt, gehört einfach zum Basisspiel und wird nicht getrackt.
+- Eine Erweiterung kann man auch ohne Basisspiel ausleihen.
+- Eigenständig spielbare Erweiterungen (Standalone und Erweiterung zugleich) bekommen einen eigenen Eintrag und stehen auch im Standard-Regal; zusätzlich erscheinen sie in der Erweiterungsliste ihres Basisspiels.
+- Nur ein Teil der Erweiterungen ist auf BGG erfasst. Der Import ordnet die erfassten automatisch zu; die übrigen fügt Jakob über die normale BGG-Suche hinzu. Ist der Treffer eine Erweiterung, fragt das Formular nach dem Basisspiel (aus den BGG-Daten vorausgefüllt, falls das Basisspiel schon im Regal steht).
+- Ideen aus der Ideenrunde, noch zu bestätigen: Filter rechnen Erweiterungen mit ein („mit Erweiterung bis 6“), Schachtelkante hinter dem Cover als Hinweis, Suche findet auch Erweiterungen, Empfehlungszeile von Jakob.
 
 ## 12. Nächste Schritte
 
