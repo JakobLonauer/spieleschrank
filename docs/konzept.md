@@ -6,6 +6,16 @@ Dieses Dokument hält alles fest, was bis zum ersten Prototyp entschieden wurde.
 
 ---
 
+> ## OBERSTE MAXIME
+>
+> **Perfekte, smoothe, polished User Experience geht über alles.**
+>
+> **Alles, was nicht zum absoluten Kern gehört, wird dezent und nicht aufdringlich umgesetzt, auch wenn Jakob es ausdrücklich bestellt:** kleine Icon-Buttons, ruhige Textlinks, Hinweise nur dort, wo man ohnehin hinschaut. **Zusatzfunktionen dürfen das Interface nie blockieren, überladen oder unterbrechen.** Alles muss nahtlos und poliert ineinandergreifen. Im Zweifel tiefer verstecken oder weglassen.
+>
+> Kern und Zusatz sind in `CLAUDE.md` abgegrenzt.
+
+---
+
 ## 1. Kernidee
 
 Eine private Website, auf der Familie und Freunde jederzeit Jakobs Brettspielsammlung sehen, filtern und Spiele ausleihen können.
@@ -273,7 +283,38 @@ Jeweils `index.html` (identisch mit der veröffentlichten Version) und `index-of
 
 **Bewusst verworfen:** Zufallsgenerator, Bewertungen, Sortiermenü, Spieleabend-Planer. Jede Funktion bräuchte ein eigenes Bedienelement für eine selten gestellte Frage.
 
-## 11. Nächste Schritte
+## 11. Beschlossen für v3 (noch nicht umgesetzt)
+
+Stand 27.10.2026. Alle übrigen Fragen aus der Exploration bleiben offen.
+
+**Ausleihzeitraum**
+- Bei einer Anfrage wählt man einen Abholtag und ein bis drei Rückgabetage. Die Rückgabetage dürfen beliebig verteilt sein, müssen aber alle innerhalb von drei Wochen ab dem Abholtag liegen.
+- Höchstdauer drei Wochen, auch für Puzzles. Einzige Ausnahme: Jakob kann selbst „offen“ (unbefristet) verleihen.
+- Überfällig erst nach dem letzten gewählten Rückgabetag.
+- Verlängerung kann man anfragen, dezent über einen kleinen Icon-Button. Jakob entscheidet.
+
+**Vormerkung bleibt**
+- Ein zurückgegebenes Spiel wird nicht automatisch wieder frei, weil Jakob es vielleicht selbst weiterspielen will.
+- Vorschlag (noch zu bestätigen): Vormerken ohne Daten; nach der Rückgabe wählt Jakob „Bescheid geben“ oder „Behalte ich vorerst“; optionaler Status „Spiele ich gerade selbst“.
+
+**Fotos vom Spieleabend**
+- Personen können während oder nach der Ausleihe Fotos hochladen oder Jakob schicken. Nur Jakob sieht sie.
+- Hinweis darauf nur dezent: nie als Popup oder Push, höchstens einmal pro Ausleihe an Ort und Stelle.
+
+**Regelhefte**
+- Dezenter Link in der Spielansicht, für alle sichtbar, auch ohne Ausleihe.
+- PDFs werden auf Jakobs Server gehostet, nicht nur nach BGG verlinkt (unabhängig von Änderungen auf BGG). Abrufbar nur nach Login.
+
+**Puzzles**
+- Derzeit ca. 20, wachsend, fast nur 1000 oder 500 Teile und weniger. Sichtbar für dieselben Personen wie die Spiele, gleiche Abläufe und Regeln.
+- Vorschlag (noch zu bestätigen): Umschalter „Spiele | Puzzles“ im Regal, Erfassung über eigenes Foto plus wenige Felder.
+
+**Erweiterungen**
+- Jakob kann zu Basisspielen Erweiterungen angeben (teils mehrere pro Spiel).
+- Standardansicht und Suche zeigen nur Basisspiele; Erweiterungen lassen sich optional einblenden.
+- In der Spielansicht dezenter Hinweis auf vorhandene Erweiterungen; beim Ausleihen kann man sie zusätzlich zum Basisspiel auswählen.
+
+## 12. Nächste Schritte
 
 1. BGG-Anwendung registrieren (Freigabe dauert).
 2. Prototyp weiter schleifen: Jakobs konkrete Korrekturen.
