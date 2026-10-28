@@ -29,7 +29,7 @@ Private Website, auf der Familie und Freunde Jakobs Brettspielsammlung sehen, fi
 Jede Version ist mehrfach gesichert:
 
 1. **Ordner:** Jede Version hat ihren eigenen Ordner unter `prototyp/`. Ältere Ordner werden nie überschrieben.
-2. **Git-Tags:** `v0.1-prototyp` bis `v0.4-prototyp` für die Prototypen, `v1.0.0` und folgende für die echte App. Der Server spielt nachts immer den neuesten Tag `vX.Y.Z` ein.
+2. **Git-Tags:** `v0.1-prototyp` bis `v0.4-prototyp` für die Prototypen, `v1.0.0` und folgende für die echte App (lokal). Der Server spielt nachts ein, was auf dem Zweig `release` liegt, sofern die Nummer in `app/VERSION` höher ist.
    - Alles anzeigen, was seit v1 geändert wurde: `git diff v0.1-prototyp`
    - Ganzes Projekt auf einen Stand setzen: `git checkout v0.1-prototyp` (zurück zur Gegenwart: `git switch main`)
    - Neuen Versuch ab einem Stand starten: `git switch -c neuer-versuch v0.4-prototyp`
@@ -37,7 +37,7 @@ Jede Version ist mehrfach gesichert:
 
 ## Regel für Änderungen
 
-- Echte App: Änderungen in `app/src` bzw. `app/pb_hooks`, dann `python3 app/tools/build.py`, Tests laufen lassen, `app/VERSION` erhöhen, Eintrag in `CHANGELOG.md`, Tag `vX.Y.Z`. Datenmodell nur über neue Migrationen ändern, nie über alte.
+- Echte App: Änderungen in `app/src` bzw. `app/pb_hooks`, dann `python3 app/tools/build.py`, Tests laufen lassen, `app/VERSION` erhöhen, Eintrag in `CHANGELOG.md`, Tag `vX.Y.Z`, dann `main` nach `release` pushen. Datenmodell nur über neue Migrationen ändern, nie über alte.
 
 - Jede größere Überarbeitung bekommt einen neuen Prototyp-Ordner, einen Eintrag in `CHANGELOG.md` und einen eigenen Git-Tag.
 - Entscheidungen, die sich ändern, werden in `docs/konzept.md` nachgezogen (alte Fassungen bleiben über Git abrufbar).

@@ -6,7 +6,7 @@ Ziel: Jakob braucht kein Terminal. Er legt bei Hetzner einen Server an und fügt
 
 1. cloud-init schreibt `/etc/spieleschrank/env` (nur root), installiert git und curl, klont dieses Repository nach `/opt/spieleschrank/src` und startet `install.sh`.
 2. `install.sh`: Zeitzone Wien, automatische Sicherheitsupdates (Neustart bei Bedarf um 5 Uhr), Firewall (80, 443, SSH gebremst), SSH nur mit Schlüssel, Dienstkonto `spieleschrank`, systemd-Dienste, dann `update.sh --force`.
-3. `update.sh`: neuester Tag `vX.Y.Z` → `releases/<tag>`, offizielles PocketBase-Release laden und gegen `pocketbase.sha256` prüfen, Datenbank anlegen (Migrationen inkl. Jakobs Konto aus der env-Datei), Notfall-Konto für `/_/` anlegen, Dienst starten, prüfen. Danach wird das Startpasswort aus der env-Datei gelöscht.
+3. `update.sh`: Stand des Zweigs `release` → `releases/v<app/VERSION>`, offizielles PocketBase-Release laden und gegen `pocketbase.sha256` prüfen, Datenbank anlegen (Migrationen inkl. Jakobs Konto aus der env-Datei), Notfall-Konto für `/_/` anlegen, Dienst starten, prüfen. Danach wird das Startpasswort aus der env-Datei gelöscht.
 4. PocketBase holt das Zertifikat bei Let's Encrypt, sobald die Domain auf den Server zeigt und die erste Anfrage kommt.
 
 Protokoll der Einrichtung: `/var/log/spieleschrank-install.log`.
@@ -15,8 +15,8 @@ Protokoll der Einrichtung: `/var/log/spieleschrank-install.log`.
 
 ```
 /opt/spieleschrank/
-  src/              Klon des Repositorys (nur zum Holen der Tags)
-  releases/vX.Y.Z/  app/ und deploy/ aus dem Tag
+  src/              Klon des Repositorys (nur zum Holen des Zweigs release)
+  releases/vX.Y.Z/  app/ und deploy/ aus diesem Stand, dazu REVISION (Commit)
   current ->        aktive Version
   bin/pocketbase -> bin/pocketbase-<version>
   data/             Datenbank, Dateien, Zertifikate, nächtliche Sicherungen (data/backups)
@@ -26,9 +26,9 @@ Protokoll der Einrichtung: `/var/log/spieleschrank-install.log`.
 
 ## Updates
 
-`spieleschrank-update.timer` startet jede Nacht um 4 Uhr (bis 20 Minuten später) `spieleschrank-update`. Neuere Tags werden eingespielt; scheitert der Start, wird die Datenbank zurückgespielt, die alte Version gestartet und der Tag in `.failed-tag` vermerkt.
+`spieleschrank-update.timer` startet jede Nacht um 4 Uhr (bis 20 Minuten später) `spieleschrank-update`. Steht auf `release` eine höhere Nummer in `app/VERSION` als die laufende, wird sie eingespielt; scheitert der Start, wird die Datenbank zurückgespielt, die alte Version gestartet und die Nummer in `.failed-tag` vermerkt. Gleiche oder niedrigere Nummern werden ignoriert.
 
-Freigeben: `app/VERSION` erhöhen, `CHANGELOG.md`, committen, `git tag vX.Y.Z`, `git push --tags`.
+Freigeben: `app/VERSION` erhöhen, `CHANGELOG.md`, committen, `main` pushen und `git push origin main:release`. Tags `vX.Y.Z` bleiben als Markierung im lokalen Repository (aus der Arbeitsumgebung lassen sie sich nicht hochladen).
 PocketBase aktualisieren: `POCKETBASE_VERSION` und `pocketbase.sha256` (aus `checksums.txt` des Releases) anpassen.
 
 ## Notfall

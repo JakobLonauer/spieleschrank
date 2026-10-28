@@ -458,8 +458,8 @@ In beiden Varianten findet die Suche Spiele und Puzzles gemeinsam. Weitere gepr�
 - Automatische Sicherheitsupdates von Ubuntu, bei Bedarf Neustart um 5 Uhr.
 - Firewall: nur 80/443, SSH gebremst und nur mit Schlüssel.
 - PocketBase sichert jede Nacht um 3:30 Uhr alles (Datenbank und Dateien), 7 Tage lang. Empfohlen: Hetzner-Backups dazubuchen (Kopie außerhalb des Servers).
-- Updates: Jede Nacht um 4 Uhr schaut der Server, ob es einen neuen Tag `vX.Y.Z` im Repository gibt. Wenn ja: Dienst stoppen, Datenbank sichern, umschalten, starten, prüfen. Startet die neue Version nicht sauber, kommt die Sicherung zurück und die alte Version läuft weiter; dieser Tag wird nicht noch einmal versucht.
-- Freigeben heißt also: `app/VERSION` erhöhen, committen, Tag `vX.Y.Z` setzen, pushen.
+- Updates: Jede Nacht um 4 Uhr schaut der Server, ob auf dem Zweig `release` eine höhere Versionsnummer (`app/VERSION`) liegt. Wenn ja: Dienst stoppen, Datenbank sichern, umschalten, starten, prüfen. Startet die neue Version nicht sauber, kommt die Sicherung zurück und die alte Version läuft weiter; diese Version wird nicht noch einmal versucht.
+- Freigeben heißt also: `app/VERSION` erhöhen, committen, `main` nach `release` pushen.
 
 **Neu gegenüber Prototyp v4**
 - Passwort ändern im Konto-Menü (für alle).
