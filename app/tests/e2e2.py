@@ -62,9 +62,13 @@ with sync_playwright() as p:
     run_axe(pg,'game-sheet-admin')
     pg.keyboard.press('Escape'); pg.wait_for_timeout(400)
     pg.click('.dtab[data-tab="verwalten"]'); pg.wait_for_timeout(400); run_axe(pg,'verwalten')
-    ok('orphan tool row before enrichment', 'Ohne Grundspiel' in pg.inner_text('#view'))
-    pg.click('[data-act="orphan-list"]'); pg.wait_for_timeout(500); run_axe(pg,'orphan-sheet'); pg.screenshot(path=OUT+'24a-ohne-grundspiel.png')
-    pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+    # Je nach Minutentakt hat die BGG-Ergänzung die Erweiterung schon zugeordnet
+    if 'Ohne Grundspiel' in pg.inner_text('#view'):
+        ok('orphan tool row before enrichment', True)
+        pg.click('[data-act="orphan-list"]'); pg.wait_for_timeout(500); run_axe(pg,'orphan-sheet'); pg.screenshot(path=OUT+'24a-ohne-grundspiel.png')
+        pg.keyboard.press('Escape'); pg.wait_for_timeout(300)
+    else:
+        ok('orphan tool row before enrichment (already enriched)', pg.evaluate("fetch('/api/collections/items/records?filter='+encodeURIComponent(\"kind='exp' && base=''\"),{headers:{Authorization:JSON.parse(localStorage.getItem('pocketbase_auth')).token}}).then(r=>r.json()).then(d=>d.items.length===0)"))
     c.close()
     # Hintergrund-Ergänzung von BGG (Cron jede Minute)
     tok=api('/api/collections/users/auth-with-password', method='POST', body={'identity':'jakob','password':'Sp1eleschrank!'})['token']
