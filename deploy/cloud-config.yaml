@@ -1,0 +1,23 @@
+#cloud-config
+# Spieleschrank: Einrichtung eines neuen Servers (Hetzner, Ubuntu 24.04).
+# Diesen ganzen Text beim Anlegen des Servers ins Feld „Cloud config“ einfügen.
+# Nur die drei Werte zwischen den beiden Linien ändern, alles andere bleibt, wie es ist.
+write_files:
+  - path: /etc/spieleschrank/env
+    owner: root:root
+    permissions: "0600"
+    content: |
+      # ---------- HIER ANPASSEN ----------
+      DOMAIN=spieleschrank.example.at
+      EMAIL=deine@adresse.at
+      SPIELESCHRANK_ADMIN_PASSWORD=ein-langes-eigenes-Passwort
+      # ---------- ENDE ----------
+      SPIELESCHRANK_ADMIN_USER=jakob
+      SPIELESCHRANK_OWNER=Jakob
+      REPO_URL=https://github.com/JakobLonauer/spieleschrank.git
+package_update: true
+packages:
+  - git
+  - curl
+runcmd:
+  - [bash, -c, "git clone -q https://github.com/JakobLonauer/spieleschrank.git /opt/spieleschrank/src && bash /opt/spieleschrank/src/deploy/install.sh >> /var/log/spieleschrank-install.log 2>&1"]

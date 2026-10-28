@@ -1,0 +1,14 @@
+
+/* =================== Echte App =================== */
+/* Ladebildschirm, bis die Daten vom Server da sind */
+.boot { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; }
+.boot-in { display: grid; justify-items: center; gap: 14px; color: var(--fg-2); font-weight: 600; }
+.boot-in svg { width: 44px; height: 44px; animation: bootPulse 1.4s var(--ease) infinite; }
+@keyframes bootPulse { 50% { transform: translateY(-4px); opacity: .7; } }
+.import-sum { display: grid; gap: 6px; padding: 14px 16px; border-radius: 14px; background: var(--surface-2); font-size: .9375rem; line-height: 1.45; }
+.import-sum b { font-weight: 720; }
+.btn[aria-busy="true"] { pointer-events: none; opacity: .7; }
+
+/* Einstellungen: kleiner Hinweis, dass etwas eingetragen ist */
+.mini-pill.ok { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-soft); color: var(--accent-ink); }
+.mini-pill.ok svg { width: 14px; height: 14px; }

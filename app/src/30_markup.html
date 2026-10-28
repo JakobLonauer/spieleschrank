@@ -1,0 +1,12 @@
+<div id="app"><div class="boot" aria-busy="true"><div class="boot-in"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="2" y="9" width="7" height="15" rx="1.5" fill="#1F6B57"/><rect x="10.5" y="4" width="7" height="20" rx="1.5" fill="#F2B33D"/><rect x="19" y="12" width="7" height="12" rx="1.5" fill="#E26D5A"/><rect x="1" y="24.5" width="26" height="2.5" rx="1.25" fill="#16201B"/></svg><span>Spieleschrank wird geöffnet …</span></div></div></div>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<div id="sheet" class="sheet-root" hidden>
+  <div class="scrim" data-act="close-sheet"></div>
+  <section class="sheet" id="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="grab" id="sheet-grab" aria-hidden="true"><span></span></div>
+    <button class="icon-btn sheet-close" data-act="close-sheet" aria-label="Schließen"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="sheet-scroll" id="sheet-body"></div>
+    <div class="sheet-foot" id="sheet-foot" hidden></div>
+  </section>
+</div>
+<div id="pop" class="pop" role="dialog" hidden></div>

@@ -1,0 +1,176 @@
+
+/* =================== v4: Feinschliff =================== */
+/* Wärmere, ruhigere Flächen. Tokens für Radien, Schatten und Bewegung, damit alles gleich atmet. */
+:root {
+  --bg: #F3F4EE;
+  --surface: #FFFEFB;
+  --surface-2: #ECEFE6;
+  --surface-3: #E0E4D8;
+  --line: #D8DDD0;
+  --fg: #17211C;
+  --fg-2: #45524A;
+  --fg-3: #5C6962;
+  --sh-xs: 0 1px 2px rgb(var(--shadow) / .05);
+  --sh-sm: 0 1px 2px rgb(var(--shadow) / .07), 0 3px 8px -3px rgb(var(--shadow) / .12);
+  --sh-lg: 0 2px 6px rgb(var(--shadow) / .06), 0 28px 56px -22px rgb(var(--shadow) / .42);
+  --dur-1: .12s; --dur-2: .18s; --dur-3: .28s;
+  --spring: cubic-bezier(.34, 1.5, .64, 1);
+  --thumb: color-mix(in oklab, var(--fg) 22%, transparent);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0F1412; --surface: #161D19; --surface-2: #1E2621; --surface-3: #28312B; --line: #2B3530; --sh-xs: 0 1px 2px rgb(0 0 0 / .25); }
+}
+:root[data-theme="dark"] { --bg: #0F1412; --surface: #161D19; --surface-2: #1E2621; --surface-3: #28312B; --line: #2B3530; --sh-xs: 0 1px 2px rgb(0 0 0 / .25); }
+
+/* Schlanke Scrollleisten in den Farben der Oberfläche */
+html { scrollbar-color: var(--thumb) transparent; }
+.sheet-scroll, .pop, .shelf-row, .cover-row { scrollbar-width: thin; scrollbar-color: var(--thumb) transparent; }
+p { text-wrap: pretty; }
+
+/* Große Schrift: Bedienelemente wachsen mit dem Text, statt ihn abzuschneiden */
+.btn { height: auto; min-height: 52px; padding-block: 10px; line-height: 1.2; }
+.btn-sm { min-height: 42px; padding-block: 8px; }
+.sheet-foot > .btn { white-space: normal; text-wrap: balance; }
+.chip { height: auto; min-height: 42px; padding-block: 6px; }
+.ort-chips .chip { min-height: 38px; }
+.tagbtn, .togglebtn, .pick { height: auto; padding-block: 6px; }
+.tagbtn { min-height: 40px; }
+.togglebtn { min-height: 44px; }
+.pick { min-height: 46px; }
+.pop-opt { height: auto; min-height: 46px; padding-block: 8px; }
+.pop-any { height: auto; min-height: 44px; }
+.seg button { height: auto; min-height: 44px; padding-block: 6px; line-height: 1.2; }
+.dtab { height: auto; min-height: 38px; padding-block: 6px; }
+.back-link { height: auto; min-height: 40px; }
+.examples button { height: auto; min-height: 34px; padding-block: 4px; }
+.toast-act { height: auto; min-height: 36px; }
+.pill, .tag { height: auto; min-height: 26px; padding-block: 3px; line-height: 1.2; }
+.new-tag { height: auto; min-height: 20px; padding-block: 2px; line-height: 1.2; }
+.badge { height: auto; min-height: 20px; padding-block: 2px; line-height: 1.15; }
+.ttab .badge { min-height: 18px; }
+.input { height: auto; min-height: 50px; padding-block: 12px; line-height: 1.35; }
+.search input { height: auto; min-height: 50px; padding-block: 12px; line-height: 1.35; }
+
+/* Sortierung: größere Tippfläche */
+.sort { padding: 3px; border-radius: 12px; }
+.sort button { height: auto; min-height: 34px; padding: 4px 12px; border-radius: 9px; }
+
+/* Flächen: ein leiser Schatten statt harter Kanten */
+.row, .person, .req, .tool-row, .option-card, .steps li, .pw-card, .lst-row, .xpick, .exp-box { box-shadow: var(--sh-xs); }
+.pop, .toast { box-shadow: var(--sh-lg); }
+.btn-primary { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 1px 2px rgb(var(--shadow) / .12), 0 8px 18px -10px rgb(var(--shadow) / .6); }
+.btn-primary:active:not([disabled]) { background: var(--accent-press); }
+.btn-quiet:active:not([disabled]) { background: var(--surface-3); }
+.btn-ghost:active:not([disabled]) { background: var(--surface-2); }
+
+/* Schachtelkanten der Erweiterungen: leichter, mit Lichtkante */
+.cover-wrap::before, .cover-wrap::after { box-shadow: 0 1px 0 rgba(0, 0, 0, .14), inset 0 0 0 1px rgba(0, 0, 0, .1), inset 0 1px 0 rgba(255, 255, 255, .22); }
+.cover-wrap::before { transform: translate(4px, -4px); filter: saturate(.85) brightness(.97); }
+.cover-wrap[data-stack="2"]::after { transform: translate(8px, -8px); filter: saturate(.7) brightness(.93); }
+
+/* Eckdaten: alle Karten oben bündig, auch wenn eine eine Zusatzzeile hat */
+.fact { align-items: start; }
+.fact .i { margin-top: 1px; }
+
+/* Spieltitel im Satz: linksbündig statt zentriert umbrechen */
+.inline-link { text-align: inherit; }
+
+/* Blatt: Trennlinie über dem Fuß nur, wenn darunter noch Inhalt steht */
+.sheet-foot { border-top-color: transparent; transition: border-color var(--dur-2), box-shadow var(--dur-2); }
+.sheet.more .sheet-foot { border-top-color: var(--line); box-shadow: 0 -12px 24px -18px rgb(var(--shadow) / .4); }
+
+/* Kleine Rückmeldungen beim Antippen */
+@keyframes pulseIn { 0% { transform: scale(1); } 40% { transform: scale(1.24); } 100% { transform: scale(1); } }
+.pulse > .i, .pulse .cb, .badge.bump { animation: pulseIn .38s var(--spring); }
+.ttab-ic { transition: background .2s var(--ease), color .2s, transform var(--dur-1) var(--ease); }
+.ttab:active .ttab-ic { transform: scale(.93); }
+.dtab { transition: background var(--dur-2), color var(--dur-2), box-shadow var(--dur-2), transform var(--dur-1) var(--ease); }
+.dtab:active, .sort button:active, .tagbtn:active { transform: scale(.97); }
+.seg button { transition: background var(--dur-2), color var(--dur-2), box-shadow var(--dur-2), transform var(--dur-1) var(--ease); }
+.seg button:active { transform: scale(.98); }
+.rules-link, .mini-act, .back-link, .exp-row, .tool-row, .lst-row { transition: background var(--dur-2), color var(--dur-2), border-color var(--dur-2), transform var(--dur-1) var(--ease); }
+.rules-link:active, .mini-act:active, .back-link:active, .exp-row:active, .tool-row:active { transform: scale(.985); }
+.row-main { transition: transform var(--dur-1) var(--ease); }
+.row-main:active { transform: scale(.985); }
+.cover-row button { transition: transform var(--dur-2) var(--ease); }
+@media (hover: hover) { .cover-row button:hover { transform: translateY(-2px); } }
+
+/* Kalender: gesperrte Tage bleiben antippbar und sagen, warum */
+.cal-day { height: auto; min-height: 2.75rem; }
+.cal-day > span { width: min(2.5rem, 100%); height: auto; aspect-ratio: 1; }
+.cal-day[aria-disabled="true"] { cursor: default; color: var(--fg-3); }
+.cal-day[aria-disabled="true"]:not(.is-start):not(.is-busy) > span { opacity: .45; }
+@media (hover: hover) { .cal-day[aria-disabled="true"]:hover > span { background: none; } }
+.cal-day[aria-disabled="true"]:active > span { transform: none; }
+.cal-day.is-start[aria-disabled="true"] > span { opacity: 1; }
+.cal-day.nope > span { animation: nope .32s var(--ease); }
+@keyframes nope { 20%, 60% { transform: translateX(-2px); } 40%, 80% { transform: translateX(2px); } }
+.cal-hint.info { display: flex; gap: 8px; align-items: flex-start; color: var(--fg-2); font-weight: 600; }
+.cal-hint.info .i { width: 18px; height: 18px; margin-top: 2px; color: var(--fg-3); }
+@media (max-width: 359.98px) { .cal-day { min-height: 2.5rem; } .cal-day > span { width: min(2.25rem, 100%); } }
+
+/* Anmeldung: „Vergessen?“ neben dem Passwort */
+.label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.quiet-link { color: var(--fg-2); font-size: .875rem; font-weight: 620; text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--fg) 25%, transparent); text-underline-offset: 3px; border-radius: 4px; }
+@media (hover: hover) { .quiet-link:hover { color: var(--fg); text-decoration-color: currentColor; } }
+
+/* Handy: der erste Bildschirm zeigt früher Schachteln */
+@media (max-width: 759.98px) {
+  .view { padding-top: 10px; }
+  .kind-switch { margin-top: 12px; max-width: 280px; padding: 3px; border-radius: 12px; }
+  .kind-switch button { min-height: 38px; border-radius: 9px; font-size: .9375rem; }
+  .tools { margin: 12px 0 20px; }
+  .section > .sec-head .sub { font-size: .9375rem; line-height: 1.4; }
+  .section + .section { margin-top: 32px; }
+}
+
+/* Schaufenster am Handy: schmale Leiste statt halber Bildschirm */
+@media (max-width: 559.98px) {
+  .sc-cta { flex-wrap: nowrap; justify-content: space-between; gap: 12px; padding-top: 10px; }
+  .sc-cta p { text-align: left; font-size: .875rem; line-height: 1.3; }
+  .sc-cta .btn { flex: none; }
+  .showcase-view { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Große Schrift, Teil 2: Überschriften wachsen mit und bleiben größer als der Fließtext, laufen aber nicht aus dem Bildschirm */
+@media (max-width: 759.98px) {
+  .h1 { font-size: min(1.6875rem, max(8vw, 1.2rem)); }
+  #hello .h1 { font-size: min(1.5rem, max(7.5vw, 1.2rem)); }
+  .h2 { font-size: min(1.3125rem, max(6.4vw, 1.125rem)); }
+  .sheet-title { font-size: min(1.5625rem, max(7.4vw, 1.2rem)); }
+  .compact-head .sheet-title { font-size: min(1.375rem, max(6.6vw, 1.15rem)); }
+  .brand { font-size: min(1.3125rem, 6.4vw); }
+}
+.sheet-title, .h1, .h2 { overflow-wrap: anywhere; }
+.tile-title, .req-text, .person-text, .row-text, .bubble { overflow-wrap: anywhere; }
+.facts { grid-template-columns: repeat(auto-fit, minmax(min(100%, max(8rem, calc(50% - 4px))), 1fr)); }
+.gs-head { grid-template-columns: 116px minmax(0, 1fr); }
+.req-top { grid-template-columns: auto minmax(0, 1fr) 52px; }
+.row-main { grid-template-columns: 56px minmax(0, 1fr); }
+/* Knöpfe in Zeilen rutschen zuerst in die nächste Zeile und brechen erst dann selbst um */
+.req-actions .btn, .row-actions .btn, .person .btn { flex: 0 0 auto; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.sec-head .btn, .page-head .btn { max-width: 100%; white-space: normal; }
+.tool-row { grid-template-columns: 24px minmax(0, 1fr) 20px; }
+.option-card { grid-template-columns: 48px minmax(0, 1fr) 20px; }
+.tool-row span, .option-card span { overflow-wrap: anywhere; }
+
+/* Kopfzeile liegt oben unsichtbar auf dem Tisch und bekommt erst beim Scrollen ihre Milchglasfläche */
+.topbar { transition: border-color .2s, background-color .2s; }
+.topbar:not(.scrolled) { background-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* Beim ersten Öffnen legen sich die Schachteln nacheinander ins Regal (einmalig, nur ohne reduzierte Bewegung) */
+@keyframes tileIn { from { opacity: 0; transform: translateY(10px); } }
+.intro .grid > .tile, .intro .shelf-row > .tile { animation: tileIn .46s var(--ease) both; }
+.intro .grid > .tile:nth-child(1), .intro .shelf-row > .tile:nth-child(1) { animation-delay: 0ms; }
+.intro .grid > .tile:nth-child(2), .intro .shelf-row > .tile:nth-child(2) { animation-delay: 35ms; }
+.intro .grid > .tile:nth-child(3), .intro .shelf-row > .tile:nth-child(3) { animation-delay: 70ms; }
+.intro .grid > .tile:nth-child(4), .intro .shelf-row > .tile:nth-child(4) { animation-delay: 105ms; }
+.intro .grid > .tile:nth-child(5), .intro .shelf-row > .tile:nth-child(5) { animation-delay: 140ms; }
+.intro .grid > .tile:nth-child(6), .intro .shelf-row > .tile:nth-child(6) { animation-delay: 175ms; }
+.intro .grid > .tile:nth-child(7), .intro .shelf-row > .tile:nth-child(7) { animation-delay: 210ms; }
+.intro .grid > .tile:nth-child(8), .intro .shelf-row > .tile:nth-child(8) { animation-delay: 245ms; }
+.intro .grid > .tile:nth-child(9), .intro .shelf-row > .tile:nth-child(9) { animation-delay: 280ms; }
+.intro .grid > .tile:nth-child(10), .intro .shelf-row > .tile:nth-child(10) { animation-delay: 315ms; }
+.intro .grid > .tile:nth-child(11), .intro .shelf-row > .tile:nth-child(11) { animation-delay: 350ms; }
+.intro .grid > .tile:nth-child(12), .intro .shelf-row > .tile:nth-child(12) { animation-delay: 385ms; }
+.intro .grid > .tile:nth-child(n+13) { animation-delay: 420ms; }

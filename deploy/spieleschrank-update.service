@@ -1,0 +1,9 @@
+[Unit]
+Description=Spieleschrank: neue Version einspielen, falls freigegeben
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/spieleschrank-update
+TimeoutStartSec=15min

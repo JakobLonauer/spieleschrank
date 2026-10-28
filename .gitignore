@@ -1,0 +1,6 @@
+# Laufzeitdaten und Testausgaben
+pb_data/
+app/tests/shots/
+node_modules/
+__pycache__/
+*.zip
