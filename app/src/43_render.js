@@ -483,6 +483,7 @@ function showcaseHTML() {
     <div class="sc-hero"><h1 class="h1">${esc(S.settings.title)}</h1><p class="sub">${games.length} Spiele und ${pzs.length} Puzzles, die Jakob mit Familie und Freunden teilt. Tipp auf eine Schachtel, um mehr zu sehen.</p></div>
     <section class="section" aria-labelledby="sc-g"><div class="sec-head"><h2 class="h2" id="sc-g">Spiele<span class="count">${games.length}</span></h2></div><div class="grid">${games.map(g => tileHTML(g, { plain: true, act: 'sc-open' })).join('')}</div></section>
     ${pzs.length ? `<section class="section" aria-labelledby="sc-p"><div class="sec-head"><h2 class="h2" id="sc-p">Puzzles<span class="count">${pzs.length}</span></h2></div><div class="grid grid-pz">${pzs.map(p => tileHTML(p, { plain: true, act: 'sc-open' })).join('')}</div></section>` : ''}
+  <p class="bgg-credit sc-credit"><a href="https://boardgamegeek.com" target="_blank" rel="noopener">Spieldaten: Powered by BGG</a></p>
   </main>
   <aside class="sc-cta" aria-label="Zugang"><p>Lust bekommen? Frag Jakob nach einem Zugang.</p><button class="btn btn-primary btn-sm" data-act="access-request">Zugang anfragen</button></aside>`;
 }

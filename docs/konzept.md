@@ -465,3 +465,4 @@ In beiden Varianten findet die Suche Spiele und Puzzles gemeinsam. Weitere gepr�
 - Passwort ändern im Konto-Menü (für alle).
 - BGG-Schlüssel in den Einstellungen.
 - „Ohne Grundspiel“ unter Werkzeuge.
+- Quellenangabe „Powered by BGG“ am Ende des Spielblatts (Link zur BGG-Seite des Spiels) und des Schaufensters.

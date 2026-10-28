@@ -12,3 +12,9 @@
 /* Einstellungen: kleiner Hinweis, dass etwas eingetragen ist */
 .mini-pill.ok { display: inline-flex; align-items: center; gap: 4px; background: var(--accent-soft); color: var(--accent-ink); }
 .mini-pill.ok svg { width: 14px; height: 14px; }
+
+/* Quellenangabe für BoardGameGeek: leise, am Ende */
+.bgg-credit { font-size: 0.8125rem; color: var(--fg-2); }
+.bgg-credit a { color: inherit; text-decoration: underline; text-decoration-color: color-mix(in oklab, currentColor 35%, transparent); text-underline-offset: 3px; padding-block: 6px; display: inline-block; }
+.bgg-credit a:hover { color: var(--fg); }
+.sc-credit { text-align: center; margin: 8px 0 24px; }

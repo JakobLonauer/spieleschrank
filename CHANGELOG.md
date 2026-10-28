@@ -12,6 +12,7 @@ Vom Prototyp zur echten App auf eigenem Server.
 **Oberfläche**
 - Gestaltung und Abläufe aus Prototyp v4, jetzt mit echten Daten, Anmeldung und Live-Aktualisierung
 - Neu: Passwort ändern im Konto-Menü, BGG-Schlüssel in den Einstellungen, „Ohne Grundspiel“ unter Werkzeuge
+- Quellenangabe „Powered by BGG“ leise am Ende von Spielblatt und Schaufenster (Bedingung der BGG-Lizenz)
 - Schriften liegen auf dem eigenen Server (keine Anfragen an Google)
 
 **Betrieb**

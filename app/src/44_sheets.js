@@ -173,6 +173,7 @@ function gameView(id) {
         ${rules}${parent}${english}
         ${g.desc ? `<p class="desc">${esc(g.desc)}</p>` : ''}
         ${rec}${expBox}${once}${adminExtra}
+        ${g.bggId ? `<p class="bgg-credit"><a href="https://boardgamegeek.com/${isExp(g) ? 'boardgameexpansion' : 'boardgame'}/${g.bggId}" target="_blank" rel="noopener">Eckdaten: Powered by BGG</a></p>` : ''}
       </div>`;
     let foot = '';
     if (admin) {
