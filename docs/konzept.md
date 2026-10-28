@@ -247,7 +247,7 @@ Quellen (Stand August 2026, Dokumentation eines Open-Source-Projekts; verbindlic
 
 **Alternative:** SvelteKit oder Next.js mit SQLite im Docker-Container. Mehr Kontrolle, aber Login, Admin und Uploads selbst bauen.
 
-**Hosting-Schritte:** Domain kaufen → VPS anlegen → DNS auf den Server → Docker Compose mit PocketBase und Caddy (holt HTTPS automatisch). Dazu: `noindex`, Login-Versuche begrenzen, keine Tracker, nächtliches Backup.
+**Hosting (entschieden 28.10.2026):** eigener Server in der EU bei Hetzner (Ubuntu 24.04), eigene Domain. PocketBase läuft direkt als systemd-Dienst und holt das HTTPS-Zertifikat selbst bei Let's Encrypt; Docker und Caddy entfallen. Jakob richtet den Server ohne Terminal ein: Er fügt beim Anlegen eine fertige Cloud-Config ein (Domain, E-Mail, Passwort), alles Weitere läuft automatisch (Abschnitt 13). Dazu: `noindex`, Login-Versuche begrenzt, keine Tracker, nächtliche Sicherung.
 
 **Benachrichtigungen (geplant):** in der App (Zähler); an Mitglieder über einen WhatsApp-Link mit vorausgefülltem Text, den Jakob selbst abschickt. Web-Push höchstens als Zusatz, weil er am iPhone erst nach „Zum Home-Bildschirm“ funktioniert. **Kein Telegram- oder sonstiger Bot** (von Jakob ausgeschlossen, 27.10.2026).
 
@@ -428,10 +428,40 @@ In beiden Varianten findet die Suche Spiele und Puzzles gemeinsam. Weitere gepr�
 
 ## 12. Nächste Schritte
 
-1. BGG-Anwendung registrieren (Freigabe dauert).
-2. v3 durchklicken: Puzzles als Umschalter oder Regalbrett entscheiden, Kalender am Handy testen, konkrete Korrekturen sammeln.
-3. Domain und VPS besorgen.
-4. PocketBase-Schema nach Abschnitt 6 anlegen.
-5. Prototyp an PocketBase anbinden (Login, Spiele, Ausleihen).
-6. BGG-Import (CSV-Export als Start, danach API mit Token).
-7. Familie testen lassen, dann Phase 2 (Erinnerungen, Benachrichtigungen).
+1. Jakob: GitHub-Repository `spieleschrank` anlegen, Domain kaufen, Hetzner-Server mit der Cloud-Config anlegen, DNS-Eintrag setzen (Anleitung „Spieleschrank einrichten“).
+2. BGG-Anwendung registrieren; den Schlüssel trägt Jakob später selbst unter Verwalten → Einstellungen ein.
+3. Sammlung importieren, Familie anlegen, testen lassen.
+4. Danach Schritt für Schritt Updates aus dem Verbesserungsplan (T01–T07 brauchen jetzt keinen Prototyp mehr, T11–T14 haben ihren Server).
+
+---
+
+## 13. Echte App (v1.0, 28.10.2026)
+
+**Aufbau**
+- `app/`: PocketBase 0.40.6. Datenmodell als Migration (`pb_migrations`), Serverlogik als JavaScript-Hooks (`pb_hooks`), Oberfläche als eine Datei (`pb_public/index.html`), gebaut aus `app/src` mit `tools/build.py`. Die Oberfläche ist die aus Prototyp v4; statt Beispieldaten gleicht sie jede Änderung mit dem Server ab.
+- `deploy/`: Cloud-Config, Einrichtungsskript, Update-Skript, systemd-Dienste, PocketBase-Version mit Prüfsummen.
+
+**Sicherheit und Datenschutz liegen auf dem Server, nicht in der Oberfläche**
+- Zugriffsregeln je Tabelle: Mitglieder sehen nur ihre eigenen Ausleihen, Listen, Wünsche und Fotos. Ausleihen anderer kommen über eine eigene Ansicht ohne Person (Name nur, wenn „sichtbar“).
+- Hooks prüfen jede Ausleihe wie die Oberfläche: Abholtag, 1 bis 3 Rückgabetage innerhalb von 21 Tagen, keine Überschneidung, eine Verlängerung um 14 Tage, Rücknahme binnen 3 Minuten. Mitglieder dürfen nur die Felder ändern, die ihnen zustehen.
+- Konten legt nur Jakob an; der letzte Admin kann nicht gelöscht oder herabgestuft werden.
+- Private Notiz, Schaufenster-Token und BGG-Schlüssel sieht nur Jakob. Regelhefte und Fotos gibt es nur mit kurzlebigem Datei-Token.
+- Anmelden: höchstens 6 Versuche in 15 Sekunden je Internetanschluss (reicht fürs Familienfest im selben WLAN). Protokolle ohne IP-Adressen, 14 Tage.
+
+**BoardGameGeek**
+- Der Schlüssel steht in den Einstellungen der App (Jakob trägt ihn selbst ein), ersatzweise in der Server-Einrichtung.
+- Suche, Details und Cover laufen über den Server; Cover nur von `cf.geekdo-images.com`.
+- Import des BGG-Exports (collection.csv): legt alles auf einmal an, nicht als „Neu“. Danach ergänzt der Server jede Minute bis zu 20 Einträge mit Cover, Eckdaten, anderen Titeln und ordnet Erweiterungen ihrem Grundspiel zu.
+- Erweiterungen ohne Grundspiel erscheinen bei Jakob unter Werkzeuge → „Ohne Grundspiel“, bis sie zugeordnet sind.
+
+**Betrieb ohne Terminal**
+- Automatische Sicherheitsupdates von Ubuntu, bei Bedarf Neustart um 5 Uhr.
+- Firewall: nur 80/443, SSH gebremst und nur mit Schlüssel.
+- PocketBase sichert jede Nacht um 3:30 Uhr alles (Datenbank und Dateien), 7 Tage lang. Empfohlen: Hetzner-Backups dazubuchen (Kopie außerhalb des Servers).
+- Updates: Jede Nacht um 4 Uhr schaut der Server, ob es einen neuen Tag `vX.Y.Z` im Repository gibt. Wenn ja: Dienst stoppen, Datenbank sichern, umschalten, starten, prüfen. Startet die neue Version nicht sauber, kommt die Sicherung zurück und die alte Version läuft weiter; dieser Tag wird nicht noch einmal versucht.
+- Freigeben heißt also: `app/VERSION` erhöhen, committen, Tag `vX.Y.Z` setzen, pushen.
+
+**Neu gegenüber Prototyp v4**
+- Passwort ändern im Konto-Menü (für alle).
+- BGG-Schlüssel in den Einstellungen.
+- „Ohne Grundspiel“ unter Werkzeuge.

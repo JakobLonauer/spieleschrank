@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.0.0 (28.10.2026): echte App
+
+Vom Prototyp zur echten App auf eigenem Server.
+
+**Server**
+- PocketBase mit Datenmodell, Zugriffsregeln und Serverlogik für Ausleihen, Konten, Regelhefte, Fotos, Listen, Wünsche, Zugangsanfragen und Schaufenster
+- BoardGameGeek über den Server: Suche, Details, Cover; Import des BGG-Exports mit Ergänzung im Hintergrund
+- Datenschutz serverseitig: Mitglieder sehen nur, was ihnen zusteht; Ausleihen anderer ohne Person
+
+**Oberfläche**
+- Gestaltung und Abläufe aus Prototyp v4, jetzt mit echten Daten, Anmeldung und Live-Aktualisierung
+- Neu: Passwort ändern im Konto-Menü, BGG-Schlüssel in den Einstellungen, „Ohne Grundspiel“ unter Werkzeuge
+- Schriften liegen auf dem eigenen Server (keine Anfragen an Google)
+
+**Betrieb**
+- Einrichtung über eine Cloud-Config bei Hetzner, ohne Terminal
+- HTTPS automatisch, Sicherheitsupdates automatisch, Firewall
+- Nächtliche Sicherung (7 Tage) und nächtliches Update mit automatischem Zurückrollen
+
+**Geprüft**
+- 67 API-Prüfungen (Regeln, Datenschutz, Abläufe), zwei Browser-Durchläufe (anlegen, anfragen, annehmen, übergeben, Schaufenster, Puzzle, Import, BGG-Ergänzung, Passwort), axe ohne Befund
+- Update-Skript: Ersteinrichtung, Update, kaputte Migration und kaputter Hook werden zurückgerollt, Daten bleiben erhalten
+
 ## v0.4-prototyp (27.10.2026)
 
 Feinschliff nach dem UI/UX-Brief: gleiche Funktionen, gleiche Gestalt, alles etwas ruhiger, wärmer und runder. Dazu drei reine Design-Tickets aus dem Verbesserungsplan.

@@ -132,7 +132,7 @@ if [ $FIRST = 1 ]; then
   if [ -n "$EMAIL" ] && [ -n "$PASS" ]; then run_pb superuser upsert "$EMAIL" "$PASS" >/dev/null; else run_pb migrate up >/dev/null; fi
 fi
 
-$SYSTEMCTL start $SERVICE
+$SYSTEMCTL start $SERVICE 9>&-
 if healthy; then
   rm -f "$BASE/.failed-tag"
   log "$TAG läuft."
@@ -151,7 +151,7 @@ else
     ln -sfn "$BASE/releases/$CUR" "$BASE/current.new"; mv -Tf "$BASE/current.new" "$BASE/current"
     [ -n "$OLD_PB" ] && { ln -sfn "$OLD_PB" "$BASE/bin/pocketbase.new"; mv -Tf "$BASE/bin/pocketbase.new" "$BASE/bin/pocketbase"; }
     REL="$BASE/releases/$CUR"; install_units
-    $SYSTEMCTL start $SERVICE
+    $SYSTEMCTL start $SERVICE 9>&-
   fi
   exit 1
 fi
