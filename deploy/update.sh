@@ -2,12 +2,13 @@
 # Spieleschrank: neueste freigegebene Version holen und einspielen.
 #
 # Läuft jede Nacht über den systemd-Timer und einmal bei der Ersteinrichtung.
-# Freigegeben ist eine Version, sobald es im Repository einen Tag vX.Y.Z gibt.
+# Freigegeben ist, was auf dem Zweig `release` liegt. Die Versionsnummer steht in
+# app/VERSION; eingespielt wird nur eine höhere Nummer als die laufende.
 #
 # Ablauf: neue Version vorbereiten → Dienst stoppen → Datenbank sichern → umschalten
 #         → starten → prüfen. Startet die neue Version nicht sauber, wird die Sicherung
-#         zurückgespielt und die bisherige Version wieder gestartet. Dieser Tag wird
-#         danach nicht noch einmal versucht (bis eine neuere Version kommt).
+#         zurückgespielt und die bisherige Version wieder gestartet. Diese Version wird
+#         danach nicht noch einmal versucht (bis eine neuere kommt).
 #
 # Aufruf: spieleschrank-update [--force]
 set -euo pipefail
@@ -31,25 +32,29 @@ mkdir -p "$BASE/bin" "$BASE/releases" "$BASE/update-backups" "$BASE/data"
 exec 9>"$BASE/.update.lock"
 flock -n 9 || { log "Ein Update läuft schon."; exit 0; }
 
-# ---------- 1. Welche Version ist die neueste? ----------
+# ---------- 1. Welche Version ist freigegeben? ----------
+BRANCH=$(conf RELEASE_BRANCH); BRANCH=${BRANCH:-release}
 if [ ! -d "$BASE/src/.git" ]; then git clone -q "$REPO_URL" "$BASE/src"; fi
-git -C "$BASE/src" fetch -q --tags --force --prune origin
-TAG=$(git -C "$BASE/src" tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)
-if [ -z "$TAG" ]; then log "Noch keine freigegebene Version (Tag vX.Y.Z)."; exit 0; fi
+git -C "$BASE/src" fetch -q --force --prune origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+REV=$(git -C "$BASE/src" rev-parse "origin/$BRANCH")
+VER=$(git -C "$BASE/src" show "$REV:app/VERSION" 2>/dev/null | tr -d '[:space:]' || true)
+echo "$VER" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || { log "Keine gültige Versionsnummer in app/VERSION auf $BRANCH."; exit 0; }
+TAG="v$VER"
 
 CUR=""; [ -L "$BASE/current" ] && CUR=$(basename "$(readlink -f "$BASE/current")")
 if [ $FORCE = 0 ]; then
   [ "$TAG" = "$CUR" ] && { log "Aktuell: $CUR"; exit 0; }
   [ "$TAG" = "$(cat "$BASE/.failed-tag" 2>/dev/null || true)" ] && { log "$TAG ist schon einmal gescheitert, bleibe bei $CUR."; exit 0; }
-  if [ -n "$CUR" ] && [ "$(printf '%s\n%s\n' "$CUR" "$TAG" | sort -V | tail -1)" != "$TAG" ]; then log "Keine neuere Version."; exit 0; fi
+  if [ -n "$CUR" ] && [ "$(printf '%s\n%s\n' "$CUR" "$TAG" | sort -V | tail -1)" != "$TAG" ]; then log "Keine neuere Version (läuft: $CUR, freigegeben: $TAG)."; exit 0; fi
 fi
-log "Spiele $TAG ein (bisher: ${CUR:-nichts})."
+log "Spiele $TAG ein (bisher: ${CUR:-nichts}, Stand ${REV:0:7})."
 
 # ---------- 2. Neue Version vorbereiten, solange die alte noch läuft ----------
 REL="$BASE/releases/$TAG"
 if [ ! -d "$REL" ] || [ $FORCE = 1 ]; then
   rm -rf "$REL.tmp"; mkdir -p "$REL.tmp"
-  git -C "$BASE/src" archive "$TAG" app deploy | tar -x -C "$REL.tmp"
+  git -C "$BASE/src" archive "$REV" app deploy | tar -x -C "$REL.tmp"
+  echo "$REV" > "$REL.tmp/REVISION"
   rm -rf "$REL"; mv "$REL.tmp" "$REL"
 fi
 
