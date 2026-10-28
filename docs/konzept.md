@@ -1,6 +1,6 @@
 # Spieleschrank: Konzept und Entscheidungen
 
-Stand: 27. Oktober 2026, Version 0.4 (Prototyp v4, Feinschliff). Was sich je Version geändert hat, steht in `CHANGELOG.md`; frühere Fassungen dieses Dokuments liegen in den Git-Tags `v0.1-prototyp` bis `v0.3-prototyp`.
+Stand: 28. Oktober 2026, Version 1.0 (echte App, Abschnitt 13). Was sich je Version geändert hat, steht in `CHANGELOG.md`; frühere Fassungen dieses Dokuments liegen in den Git-Tags `v0.1-prototyp` bis `v0.4-prototyp`.
 
 Dieses Dokument hält alles fest, was bis zum ersten Prototyp entschieden wurde. Es ist die Referenz, gegen die spätere Änderungen geprüft werden.
 
