@@ -14,6 +14,7 @@ Vom Prototyp zur echten App auf eigenem Server.
 - Neu: Passwort ändern im Konto-Menü, BGG-Schlüssel in den Einstellungen, „Ohne Grundspiel“ unter Werkzeuge
 - Quellenangabe „Powered by BGG“ leise am Ende von Spielblatt und Schaufenster (Bedingung der BGG-Lizenz)
 - Schriften liegen auf dem eigenen Server (keine Anfragen an Google)
+- App-Symbol und Manifest: „Zum Home-Bildschirm“ startet den Spieleschrank wie eine App
 
 **Betrieb**
 - Einrichtung über eine Cloud-Config bei Hetzner, ohne Terminal
